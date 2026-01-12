@@ -1,0 +1,184 @@
+import { useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Camera, Loader2 } from "lucide-react";
+import { mockCurator } from "@/data/mockData";
+import { useAppStore } from "@/store/useAppStore";
+import { api, toAbsoluteUrl } from "@/services/api";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+const DEFAULT_COVER = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&q=80";
+
+interface ProfileHeaderProps {
+  className?: string;
+}
+
+export function ProfileHeader({ className }: ProfileHeaderProps) {
+  const { user, updateUserProfile } = useAppStore();
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingProfile, setUploadingProfile] = useState(false);
+  
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const profileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Get user data with fallbacks - use personal images for influencer
+  const displayName = (user as any)?.username || user?.name || mockCurator.name;
+  const profilePic = (user as any)?.profile_pic || user?.avatar || mockCurator.avatar;
+  const coverUrl = (user as any)?.cover_url || DEFAULT_COVER;
+  const userId = (user as any)?.id;
+
+  const handleImageUpload = async (file: File, type: 'profile' | 'cover') => {
+    if (!userId) {
+      toast.error("Please log in to update your profile");
+      return;
+    }
+
+    const setUploading = type === 'cover' ? setUploadingCover : setUploadingProfile;
+    setUploading(true);
+
+    try {
+      // Step 1: Upload the file
+      const uploadResponse = await api.uploadMedia(file);
+      
+      if (!uploadResponse.success || !uploadResponse.data?.url) {
+        toast.error(uploadResponse.error || "Failed to upload image");
+        return;
+      }
+
+      const imageUrl = toAbsoluteUrl(uploadResponse.data.url);
+
+      // Step 2: Save to user profile with context "personal" for influencer
+      const updatePayload = type === 'cover' 
+        ? { cover_url: imageUrl, context: 'personal' } 
+        : { profile_pic: imageUrl, context: 'personal' };
+
+      const updateResponse = await api.updateUser(userId, updatePayload);
+
+      if (updateResponse.success) {
+        // Step 3: Update local state
+        updateUserProfile(type === 'cover' ? { cover_url: imageUrl } : { profile_pic: imageUrl });
+        toast.success(`${type === 'cover' ? 'Cover' : 'Profile'} image updated!`);
+      } else {
+        toast.error(updateResponse.error || "Failed to save image");
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageUpload(file, 'cover');
+  };
+
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageUpload(file, 'profile');
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className={cn("relative h-40 w-full rounded-3xl overflow-hidden mb-6", className)}
+    >
+      {/* Hidden file inputs */}
+      <input
+        ref={coverInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleCoverChange}
+      />
+      <input
+        ref={profileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleProfileChange}
+      />
+
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('${coverUrl}')`,
+        }}
+      />
+      
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 via-slate-900/50 to-transparent" />
+
+      {/* Edit Cover Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => coverInputRef.current?.click()}
+        disabled={uploadingCover}
+        className="absolute top-3 right-3 z-20 flex items-center gap-1.5 rounded-full bg-black/40 backdrop-blur-sm px-3 py-1.5 text-xs text-white/80 hover:text-white transition-colors disabled:opacity-50"
+      >
+        {uploadingCover ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <Camera className="h-3.5 w-3.5" />
+        )}
+        {uploadingCover ? "Uploading..." : "Edit Cover"}
+      </motion.button>
+      
+      {/* Content */}
+      <div className="relative z-10 h-full flex items-center px-8">
+        {/* Profile Picture with Edit Overlay */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mr-6 flex-shrink-0 relative group"
+        >
+          <img
+            src={profilePic}
+            alt="Profile"
+            className="h-20 w-20 rounded-2xl object-cover border-2 border-white/20 shadow-xl"
+          />
+          {/* Edit Profile Pic Overlay */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => profileInputRef.current?.click()}
+            disabled={uploadingProfile}
+            className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl disabled:opacity-50"
+          >
+            {uploadingProfile ? (
+              <Loader2 className="h-5 w-5 text-white animate-spin" />
+            ) : (
+              <Camera className="h-5 w-5 text-white" />
+            )}
+          </motion.button>
+        </motion.div>
+        
+        <div>
+          <motion.h1
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg"
+            style={{ fontFamily: "Nunito, sans-serif" }}
+          >
+            {displayName}
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-white/70 text-sm"
+          >
+            @{displayName.toLowerCase().replace(/\s/g, '')}
+          </motion.p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

@@ -1,0 +1,119 @@
+import { useEffect, useState } from "react";
+import { MerchantSidebar } from "@/components/navigation/MerchantSidebar";
+import { MobileBottomNav } from "@/components/navigation/MobileBottomNav";
+import { RoleSwitcher } from "@/components/navigation/RoleSwitcher";
+import { VibeAIChatbot } from "@/components/chat/VibeAIChatbot";
+import { CinematicBanner } from "@/components/merchant/CinematicBanner";
+import { CombinedAnalyticsChart } from "@/components/merchant/CombinedAnalyticsChart";
+import { TrafficSourcesChart } from "@/components/merchant/TrafficSourcesChart";
+import { TopInfluencersLeaderboard } from "@/components/merchant/TopInfluencersLeaderboard";
+import { CreateDropStudio } from "@/components/merchant/CreateDropStudio";
+import { CreateDropFAB } from "@/components/merchant/CreateDropWidget";
+import { QRStationCyberpunk } from "@/components/merchant/QRStationCyberpunk";
+import { InfluencerMerchAnalytics } from "@/components/merchant/InfluencerMerchAnalytics";
+import { mockMerchant } from "@/data/mockData";
+import { StaggeredFadeIn, FadeUpItem } from "@/components/effects/StaggeredFadeIn";
+import { useAppStore } from "@/store/useAppStore";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, Database } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+export default function MerchantDashboard() {
+  const { user, setDarkMode } = useAppStore();
+  const { toast } = useToast();
+  const [refreshKey, setRefreshKey] = useState(0); 
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  // Fix Theme Identity
+  useEffect(() => {
+    setDarkMode(false); // Force light theme variables for Merchant Teal
+    document.documentElement.classList.remove("dark");
+    // Explicitly override primary color to Teal
+    document.documentElement.style.setProperty('--primary', '169 71% 40%');
+    return () => { document.documentElement.style.removeProperty('--primary'); };
+  }, [setDarkMode]);
+
+  const handleSeedData = async () => {
+    const userId = (user as any)?.id || (user as any)?.user_id;
+    if (!userId) return;
+    
+    setIsSeeding(true);
+    try {
+      const response = await fetch(`https://pdb1056.awardspace.net/4719155_vibecheck/api.php?action=seed_analytics&user_id=${userId}`);
+      const data = await response.json();
+      
+      if (data.status === "success") {
+        toast({ title: "Database Seeded", description: "Unique analytics generated for your account." });
+        setRefreshKey(prev => prev + 1);
+        setTimeout(() => window.location.reload(), 1000); 
+      }
+    } catch (error) {
+      console.error("Failed to seed data:", error);
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
+  const businessName = (user as any)?.business_name || (user as any)?.businessName || mockMerchant.businessName;
+  const coverUrl = (user as any)?.partner_cover_url || (user as any)?.cover_url;
+  const profilePic = (user as any)?.partner_profile_pic || (user as any)?.profile_pic || user?.avatar;
+
+  return (
+    <div className="min-h-screen bg-slate-50" key={refreshKey}>
+      <MerchantSidebar />
+
+      <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <div className="md:hidden">
+            <RoleSwitcher variant="merchant" />
+          </div>
+          
+          <div className="ml-auto">
+            <Button 
+              onClick={handleSeedData} 
+              disabled={isSeeding}
+              variant="outline" 
+              size="sm" 
+              className="gap-2 border-emerald-500/50 hover:bg-emerald-50 text-emerald-600"
+            >
+              {isSeeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+              {isSeeding ? "Generating..." : "Seed Unique Analytics"}
+            </Button>
+          </div>
+        </div>
+
+        <StaggeredFadeIn staggerDelay={0.08}>
+          <FadeUpItem>
+            <CinematicBanner businessName={businessName} coverUrl={coverUrl} profilePic={profilePic} />
+          </FadeUpItem>
+
+          <FadeUpItem>
+            <div id="analytics" className="grid gap-6 lg:grid-cols-3 mb-6 scroll-mt-6">
+              <div className="lg:col-span-2"><CombinedAnalyticsChart /></div>
+              <div id="traffic" className="lg:col-span-1 scroll-mt-6"><TrafficSourcesChart /></div>
+            </div>
+          </FadeUpItem>
+
+          <FadeUpItem>
+            <div className="grid gap-6 lg:grid-cols-12 mb-6">
+              <div id="influencers" className="lg:col-span-8 scroll-mt-6"><TopInfluencersLeaderboard /></div>
+              <div id="qr-station" className="lg:col-span-4 scroll-mt-6"><QRStationCyberpunk /></div>
+            </div>
+          </FadeUpItem>
+
+          <FadeUpItem>
+            <div id="merch-analytics" className="mb-6 scroll-mt-6"><InfluencerMerchAnalytics /></div>
+          </FadeUpItem>
+
+          <FadeUpItem>
+            <div id="create-drop" className="mb-6 scroll-mt-6"><CreateDropStudio /></div>
+          </FadeUpItem>
+        </StaggeredFadeIn>
+      </main>
+
+      <CreateDropFAB />
+      <MobileBottomNav variant="partner" />
+      <VibeAIChatbot />
+    </div>
+  );
+}

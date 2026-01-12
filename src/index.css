@@ -1,0 +1,275 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* PERMANENT DARK THEME BASE
+       Light mode variables (white background) have been removed to prevent the white-screen bug.
+    */
+    --background: 225 20% 5%;
+    /* Cyberpunk Deep Blue/Black */
+    --foreground: 0 0% 96%;
+
+    --card: 225 18% 8%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 225 18% 8%;
+    --popover-foreground: 0 0% 96%;
+
+    /* Merchant Primary: Teal Identity */
+    --primary: 169 71% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 225 15% 12%;
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 225 15% 12%;
+    --muted-foreground: 220 15% 60%;
+
+    --accent: 169 71% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 225 15% 15%;
+    --input: 225 15% 15%;
+    --ring: 169 71% 40%;
+
+    --radius: 1rem;
+
+    /* VibeCheck Brand Colors */
+    --vibe-pink: 324 65% 59%;
+    --vibe-purple: 280 62% 60%;
+    --vibe-cyan: 186 81% 48%;
+    --vibe-blue: 210 90% 55%;
+    --vibe-green: 160 70% 42%;
+    --vibe-orange: 25 90% 55%;
+    --vibe-teal: 169 71% 40%;
+
+    /* Sidebar Defaults - Merchant Teal */
+    --sidebar-background: 225 20% 6%;
+    --sidebar-foreground: 220 15% 75%;
+    --sidebar-primary: 169 71% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-border: 225 15% 15%;
+    --sidebar-ring: 169 71% 40%;
+  }
+
+  /* INFLUENCER OVERRIDE - Purple Identity */
+  .influencer-theme {
+    --primary: 302 60% 60%;
+    --ring: 302 60% 60%;
+    --accent: 280 62% 60%;
+    --sidebar-primary: 302 60% 60%;
+    --sidebar-ring: 302 60% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Force dark background at the root level */
+    @apply bg-background text-foreground;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+  }
+}
+
+@layer components {
+
+  /* Cyberpunk Glass Effects */
+  .glass {
+    @apply bg-card/70 backdrop-blur-2xl border border-white/10;
+  }
+
+  .glass-dark {
+    @apply bg-card/50 backdrop-blur-3xl border border-white/5;
+  }
+
+  .glass-premium {
+    @apply bg-white/80 backdrop-blur-3xl border border-white/20 shadow-xl shadow-black/5;
+  }
+
+  .glass-landing {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-white/10;
+  }
+
+  .glass-charcoal {
+    @apply bg-black/70 backdrop-blur-xl border border-white/10;
+  }
+
+  .glass-nav {
+    @apply bg-slate-900/80 backdrop-blur-xl border border-white/10;
+  }
+
+  .glass-frosted {
+    @apply bg-white/70 backdrop-blur-xl border border-white/50;
+  }
+
+  /* Dynamic Glows */
+  .glow-pink {
+    box-shadow: 0 0 40px hsl(var(--vibe-pink) / 0.3);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 40px hsl(var(--vibe-purple) / 0.3);
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 40px hsl(var(--vibe-cyan) / 0.3);
+  }
+
+  .glow-teal {
+    box-shadow: 0 0 40px hsl(var(--vibe-teal) / 0.3);
+  }
+
+  /* Identity Gradients */
+  .gradient-influencer {
+    background: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .gradient-partner {
+    background: #1DB09B;
+  }
+
+  .gradient-vibe {
+    background: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .gradient-aurora {
+    background: linear-gradient(135deg,
+        hsl(var(--vibe-pink) / 0.8),
+        hsl(var(--vibe-purple) / 0.6),
+        hsl(var(--vibe-cyan) / 0.4));
+  }
+
+  .gradient-merchant {
+    background: #1DB09B;
+  }
+
+  .gradient-curator {
+    background: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .gradient-scout {
+    background: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .gradient-creator {
+    background: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  /* Text Gradients */
+  .text-gradient-vibe {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .text-gradient-influencer {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .text-gradient-partner {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--vibe-teal)), hsl(var(--vibe-green)));
+  }
+
+  .text-gradient-curator {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #A759D8, #DB529F);
+  }
+
+  .tilt-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Animations */
+@keyframes lavaLamp {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  25% {
+    transform: translateY(-30px) rotate(5deg) scale(1.05);
+  }
+
+  50% {
+    transform: translateY(-60px) rotate(-3deg) scale(0.95);
+  }
+
+  75% {
+    transform: translateY(-20px) rotate(2deg) scale(1.02);
+  }
+}
+
+.animate-lava-lamp {
+  animation: lavaLamp 8s ease-in-out infinite;
+}
+
+.animate-lava-lamp-delayed {
+  animation: lavaLamp 10s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.animate-lava-lamp-slow {
+  animation: lavaLamp 12s ease-in-out infinite;
+  animation-delay: -6s;
+}
+
+/* Hide Elfsight Branding */
+.eapps-widget-toolbar,
+a[href*="elfsight.com"],
+.elfsight-app-badge,
+.eapps-link,
+.eapps-tiktok-feed-posts-item-badge,
+.eapps-tiktok-feed-copyright {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
