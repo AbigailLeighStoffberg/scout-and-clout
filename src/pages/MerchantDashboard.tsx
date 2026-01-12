@@ -24,11 +24,10 @@ export default function MerchantDashboard() {
   const [refreshKey, setRefreshKey] = useState(0); 
   const [isSeeding, setIsSeeding] = useState(false);
 
-  // Fix Theme Identity
+  // Enforce Dark Theme with Teal Identity
   useEffect(() => {
-    setDarkMode(false); // Force light theme variables for Merchant Teal
-    document.documentElement.classList.remove("dark");
-    // Explicitly override primary color to Teal
+    setDarkMode(true);
+    document.documentElement.classList.add("dark");
     document.documentElement.style.setProperty('--primary', '169 71% 40%');
     return () => { document.documentElement.style.removeProperty('--primary'); };
   }, [setDarkMode]);
@@ -39,7 +38,7 @@ export default function MerchantDashboard() {
     
     setIsSeeding(true);
     try {
-      const response = await fetch(`https://pdb1056.awardspace.net/4719155_vibecheck/api.php?action=seed_analytics&user_id=${userId}`);
+      const response = await fetch(`https://vibecheck-api.atwebpages.com/api.php?action=seed_analytics&user_id=${userId}`);
       const data = await response.json();
       
       if (data.status === "success") {
@@ -59,7 +58,7 @@ export default function MerchantDashboard() {
   const profilePic = (user as any)?.partner_profile_pic || (user as any)?.profile_pic || user?.avatar;
 
   return (
-    <div className="min-h-screen bg-slate-50" key={refreshKey}>
+    <div className="min-h-screen bg-[#0f1929]" key={refreshKey}>
       <MerchantSidebar />
 
       <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
