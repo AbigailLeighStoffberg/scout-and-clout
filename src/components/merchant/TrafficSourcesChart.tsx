@@ -36,7 +36,7 @@ const icons: Record<string, React.ReactNode> = {
 
 export function TrafficSourcesChart() {
   const { user } = useAppStore();
-  const [trafficData, setTrafficData] = useState<Array<{ name: string; key: string; value: number; color: string }>>([]);
+  const [trafficData, setTrafficData] = useState<Array<{ name: string; key: string; value: number; percentage: number; color: string }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,13 +47,20 @@ export function TrafficSourcesChart() {
         try {
           const response = await api.getPartnerDashboard(String(userId));
           if (response.success && response.data?.traffic_sources) {
+            // Calculate total for percentage calculation
+            const sources = response.data.traffic_sources;
+            const total = sources.reduce((sum: number, item: any) => sum + Number(item.value || 0), 0);
             
-            // Format data using YOUR color map, ignoring API colors
-            const formattedData = response.data.traffic_sources.map((item: any) => ({
+            // Format data - use backend percentage if available, otherwise calculate
+            const formattedData = sources.map((item: any) => ({
               key: item.name, 
               name: nameMap[item.name] || item.name,
               value: item.value,
-              color: colorMap[item.name] || TEAL // <--- Enforces your colors
+              // Use backend percentage if valid, otherwise calculate
+              percentage: item.percentage && item.percentage <= 100 
+                ? Number(item.percentage) 
+                : (total > 0 ? Math.round((Number(item.value) / total) * 100) : 0),
+              color: colorMap[item.name] || TEAL
             }));
             
             setTrafficData(formattedData);
@@ -135,7 +142,7 @@ export function TrafficSourcesChart() {
                 {item.name}
               </span>
             </div>
-            <span className="text-sm font-semibold text-white">{item.value}%</span>
+            <span className="text-sm font-semibold text-white">{item.percentage}%</span>
           </div>
         ))}
       </div>

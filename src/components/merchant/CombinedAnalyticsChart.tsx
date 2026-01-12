@@ -31,7 +31,13 @@ export function CombinedAnalyticsChart() {
           const response = await api.getPartnerDashboard(String(userId));
           console.log('Partner Dashboard API response:', response);
           if (response.success && response.data?.chart_data) {
-            setData(response.data.chart_data);
+            // Map API fields (date, rev, scans) to chart fields (name, revenue, scans)
+            const formattedData = response.data.chart_data.map((item: any) => ({
+              name: item.date || item.name,
+              revenue: Number(item.rev || item.revenue || 0),
+              scans: Number(item.scans || 0)
+            }));
+            setData(formattedData);
           }
         } catch (error) {
           console.error('Error fetching partner dashboard:', error);

@@ -32,11 +32,13 @@ export function TopInfluencersLeaderboard() {
             const formattedData = response.data.top_influencers.map((inf: any) => ({
               ...inf,
               avatar: inf.avatar?.startsWith('http') ? inf.avatar : toAbsoluteUrl(inf.avatar || ''),
-              // SAFETY FIX: Ensure numbers are never undefined
+              // SAFETY FIX: Ensure numbers are never undefined and format trend properly
               traffic: Number(inf.traffic) || 0,
               sales: Number(inf.sales) || 0,
               revenue: Number(inf.revenue) || 0,
-              trend: Number(inf.trend) || 0,
+              // Use conversion_rate from backend, format to max 2 decimal places
+              trend: inf.trend ? parseFloat(Number(inf.trend).toFixed(2)) : 0,
+              conversion_rate: inf.conversion_rate ? parseFloat(Number(inf.conversion_rate).toFixed(1)) : 0,
             }));
             setTopInfluencers(formattedData);
           }

@@ -57,11 +57,11 @@ export function EarningsRadialChart() {
               setTotalBalance(response.data.balance);
             }
             
-            // Set earnings chart data from API
-            if (response.data.earnings_chart) {
+            // Set earnings chart data from API - map 'total' to 'earnings'
+            if (response.data.earnings_chart && response.data.earnings_chart.length > 0) {
               const formatted = response.data.earnings_chart.map((item: any, index: number) => ({
                 name: item.month,
-                earnings: item.earnings,
+                earnings: Number(item.total || item.earnings || 0),
                 fill: chartColors[index % chartColors.length],
               }));
               setEarningsData(formatted);
