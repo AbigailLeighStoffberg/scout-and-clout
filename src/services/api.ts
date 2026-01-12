@@ -249,9 +249,10 @@ export const api = {
 
   // Partner Dashboard
   getPartnerDashboard: async (userId: string): Promise<ApiResponse<{
-    chart_data: Array<{ name: string; revenue: number; scans: number }>;
-    traffic_sources: Array<{ name: string; value: number }>;
-    top_influencers: Array<{ id: number; name: string; avatar: string; traffic: number; sales: number; revenue: number; trend: number }>;
+    chart_data: Array<{ date?: string; name?: string; rev?: number; revenue?: number; scans: number }>;
+    traffic_sources: Array<{ name: string; value: number; percentage?: number }>;
+    top_influencers: Array<{ id: number; name: string; avatar: string; traffic: number; sales: number; revenue: number; trend: number; conversion_rate?: number }>;
+    today_scans?: number;
   }>> => {
     return fetchApi(`${BASE_URL}?action=get_partner_dashboard&user_id=${userId}`, {
       method: 'GET',
