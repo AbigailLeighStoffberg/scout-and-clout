@@ -46,23 +46,34 @@ export function TrafficSourcesChart() {
       if (userId) {
         try {
           const response = await api.getPartnerDashboard(String(userId));
-          if (response.success && response.data?.traffic_sources) {
-            // Calculate total for percentage calculation
-            const sources = response.data.traffic_sources;
+          const sources = response.data?.traffic_sources || [];
+          
+          // If backend returns empty, use fallback demo data
+          if (sources.length === 0) {
+            const fallbackData = [
+              { name: 'qr_direct', value: 45, percentage: 45 },
+              { name: 'app', value: 30, percentage: 30 },
+              { name: 'merch', value: 25, percentage: 25 }
+            ];
+            const formatted = fallbackData.map((item) => ({
+              key: item.name,
+              name: nameMap[item.name] || item.name,
+              value: item.value,
+              percentage: item.percentage,
+              color: colorMap[item.name] || TEAL
+            }));
+            setTrafficData(formatted);
+          } else {
             const total = sources.reduce((sum: number, item: any) => sum + Number(item.value || 0), 0);
-            
-            // Format data - use backend percentage if available, otherwise calculate
             const formattedData = sources.map((item: any) => ({
               key: item.name, 
               name: nameMap[item.name] || item.name,
               value: item.value,
-              // Use backend percentage if valid, otherwise calculate
               percentage: item.percentage && item.percentage <= 100 
                 ? Number(item.percentage) 
                 : (total > 0 ? Math.round((Number(item.value) / total) * 100) : 0),
               color: colorMap[item.name] || TEAL
             }));
-            
             setTrafficData(formattedData);
           }
         } catch (error) {

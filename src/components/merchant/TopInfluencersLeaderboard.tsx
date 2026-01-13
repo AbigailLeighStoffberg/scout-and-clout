@@ -29,16 +29,24 @@ export function TopInfluencersLeaderboard() {
         try {
           const response = await api.getPartnerDashboard(String(userId));
           if (response.success && response.data?.top_influencers) {
-            const formattedData = response.data.top_influencers.map((inf: any) => ({
+            // Generate placeholder avatars for influencers without avatar field
+            const avatarPlaceholders = [
+              'https://api.dicebear.com/7.x/avataaars/svg?seed=',
+              'https://api.dicebear.com/7.x/bottts/svg?seed=',
+              'https://api.dicebear.com/7.x/fun-emoji/svg?seed='
+            ];
+            
+            const formattedData = response.data.top_influencers.map((inf: any, index: number) => ({
               ...inf,
-              avatar: inf.avatar?.startsWith('http') ? inf.avatar : toAbsoluteUrl(inf.avatar || ''),
-              // SAFETY FIX: Ensure numbers are never undefined and format trend properly
+              id: inf.id || index,
+              // Generate avatar from name if not provided
+              avatar: inf.avatar 
+                ? (inf.avatar.startsWith('http') ? inf.avatar : toAbsoluteUrl(inf.avatar))
+                : `${avatarPlaceholders[index % 3]}${encodeURIComponent(inf.name || 'user')}`,
               traffic: Number(inf.traffic) || 0,
               sales: Number(inf.sales) || 0,
               revenue: Number(inf.revenue) || 0,
-              // Use conversion_rate from backend, format to max 2 decimal places
               trend: inf.trend ? parseFloat(Number(inf.trend).toFixed(2)) : 0,
-              conversion_rate: inf.conversion_rate ? parseFloat(Number(inf.conversion_rate).toFixed(1)) : 0,
             }));
             setTopInfluencers(formattedData);
           }

@@ -261,9 +261,12 @@ export const api = {
 
   // Influencer Dashboard
   getInfluencerDashboard: async (userId: string): Promise<ApiResponse<{
-    earnings_chart: Array<{ month: string; earnings: number }>;
-    gig_history: Array<{ id: number; name: string; status: string; reward: string; date: string }>;
+    earnings_chart?: Array<{ month: string; earnings?: number; total?: string }>;
+    monthly_breakdown?: Array<{ month: string; total: string }>;
+    gig_history?: Array<{ id: number; name: string; status: string; reward: string; date: string }>;
+    gig_rewards?: Array<{ gig_name: string; status: string; reward: string; date: string }>;
     total_balance?: number;
+    available_balance?: number;
     balance?: number;
     published_quest_lines?: Array<any>;
   }>> => {
