@@ -17,37 +17,65 @@ import { useAppStore } from "@/store/useAppStore";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function MerchantDashboard() {
   const { user, setDarkMode } = useAppStore();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [refreshKey, setRefreshKey] = useState(0); 
   const [isSeeding, setIsSeeding] = useState(false);
 
-  // Enforce Dark Theme with Teal Identity
+  // 1. Enforce Dark Theme with Teal Merchant Identity
   useEffect(() => {
     setDarkMode(true);
     document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("influencer-theme"); 
+    
     document.documentElement.style.setProperty('--primary', '169 71% 40%');
-    return () => { document.documentElement.style.removeProperty('--primary'); };
+    document.body.style.backgroundColor = "#0f1929"; 
+    
+    return () => { 
+      document.documentElement.style.removeProperty('--primary');
+      document.body.style.backgroundColor = "";
+    };
   }, [setDarkMode]);
 
+  // 2. Optimized Seed Function (FIXED: Removed duplicates and syntax errors)
   const handleSeedData = async () => {
-    const userId = (user as any)?.id || (user as any)?.user_id;
-    if (!userId) return;
+    const userId = user?.id || user?.user_id; 
     
+    if (!userId) {
+      toast({ title: "Error", description: "No user ID found. Please re-login." });
+      return;
+    }
+
     setIsSeeding(true);
     try {
       const response = await fetch(`https://vibecheck-api.atwebpages.com/api.php?action=seed_analytics&user_id=${userId}`);
       const data = await response.json();
       
       if (data.status === "success") {
-        toast({ title: "Database Seeded", description: "Unique analytics generated for your account." });
-        setRefreshKey(prev => prev + 1);
-        setTimeout(() => window.location.reload(), 1000); 
+        toast({ 
+          title: "Database Seeded", 
+          description: "Unique analytics generated for your account." 
+        });
+        
+        // Refresh TanStack Query cache
+        queryClient.invalidateQueries({ queryKey: ['merchant-stats'] });
+        queryClient.invalidateQueries({ queryKey: ['influencer-sales'] });
+        
+        // Trigger local re-render
+        setRefreshKey(prev => prev + 1); 
       }
     } catch (error) {
       console.error("Failed to seed data:", error);
+      toast({ 
+        title: "Syncing Analytics...", 
+        description: "AwardSpace is busy, but data may still be updating.", 
+        variant: "default" 
+      });
+      setRefreshKey(prev => prev + 1);
     } finally {
       setIsSeeding(false);
     }
@@ -58,7 +86,7 @@ export default function MerchantDashboard() {
   const profilePic = (user as any)?.partner_profile_pic || (user as any)?.profile_pic || user?.avatar;
 
   return (
-    <div className="min-h-screen bg-[#0f1929]" key={refreshKey}>
+    <div className="min-h-screen bg-[#0f1929] text-white selection:bg-teal-500/30" key={refreshKey}>
       <MerchantSidebar />
 
       <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
@@ -73,7 +101,7 @@ export default function MerchantDashboard() {
               disabled={isSeeding}
               variant="outline" 
               size="sm" 
-              className="gap-2 border-emerald-500/50 hover:bg-emerald-50 text-emerald-600"
+              className="gap-2 border-teal-500/50 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400"
             >
               {isSeeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
               {isSeeding ? "Generating..." : "Seed Unique Analytics"}
@@ -88,24 +116,36 @@ export default function MerchantDashboard() {
 
           <FadeUpItem>
             <div id="analytics" className="grid gap-6 lg:grid-cols-3 mb-6 scroll-mt-6">
-              <div className="lg:col-span-2"><CombinedAnalyticsChart /></div>
-              <div id="traffic" className="lg:col-span-1 scroll-mt-6"><TrafficSourcesChart /></div>
+              <div className="lg:col-span-2">
+                <CombinedAnalyticsChart key={`chart-${refreshKey}`} />
+              </div>
+              <div id="traffic" className="lg:col-span-1 scroll-mt-6">
+                <TrafficSourcesChart key={`traffic-${refreshKey}`} />
+              </div>
             </div>
           </FadeUpItem>
 
           <FadeUpItem>
             <div className="grid gap-6 lg:grid-cols-12 mb-6">
-              <div id="influencers" className="lg:col-span-8 scroll-mt-6"><TopInfluencersLeaderboard /></div>
-              <div id="qr-station" className="lg:col-span-4 scroll-mt-6"><QRStationCyberpunk /></div>
+              <div id="influencers" className="lg:col-span-8 scroll-mt-6">
+                <TopInfluencersLeaderboard key={`leaderboard-${refreshKey}`} />
+              </div>
+              <div id="qr-station" className="lg:col-span-4 scroll-mt-6">
+                <QRStationCyberpunk />
+              </div>
             </div>
           </FadeUpItem>
 
           <FadeUpItem>
-            <div id="merch-analytics" className="mb-6 scroll-mt-6"><InfluencerMerchAnalytics /></div>
+            <div id="merch-analytics" className="mb-6 scroll-mt-6">
+              <InfluencerMerchAnalytics />
+            </div>
           </FadeUpItem>
 
           <FadeUpItem>
-            <div id="create-drop" className="mb-6 scroll-mt-6"><CreateDropStudio /></div>
+            <div id="create-drop" className="mb-6 scroll-mt-6">
+              <CreateDropStudio />
+            </div>
           </FadeUpItem>
         </StaggeredFadeIn>
       </main>
