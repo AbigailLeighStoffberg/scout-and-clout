@@ -50,16 +50,14 @@ export function EarningsRadialChart() {
           const response = await api.getInfluencerDashboard(String(userId));
           console.log('Influencer Dashboard API response:', response);
           if (response.success && response.data) {
-            // Set total balance
-            if (typeof response.data.total_balance === 'number') {
-              setTotalBalance(response.data.total_balance);
-            } else if (typeof response.data.balance === 'number') {
-              setTotalBalance(response.data.balance);
-            }
+            // Set total balance - check all possible field names
+            const balance = response.data.available_balance || response.data.total_balance || response.data.balance || 0;
+            setTotalBalance(Number(balance));
             
-            // Set earnings chart data from API - map 'total' to 'earnings'
-            if (response.data.earnings_chart && response.data.earnings_chart.length > 0) {
-              const formatted = response.data.earnings_chart.map((item: any, index: number) => ({
+            // Set earnings chart data - map 'monthly_breakdown' OR 'earnings_chart'
+            const monthlyData = response.data.monthly_breakdown || response.data.earnings_chart || [];
+            if (monthlyData.length > 0) {
+              const formatted = monthlyData.map((item: any, index: number) => ({
                 name: item.month,
                 earnings: Number(item.total || item.earnings || 0),
                 fill: chartColors[index % chartColors.length],
@@ -67,9 +65,17 @@ export function EarningsRadialChart() {
               setEarningsData(formatted);
             }
             
-            // Set gig history from API
-            if (response.data.gig_history) {
-              setGigHistory(response.data.gig_history);
+            // Set gig history - map 'gig_rewards' OR 'gig_history'
+            const gigs = response.data.gig_rewards || response.data.gig_history || [];
+            if (gigs.length > 0) {
+              const formattedGigs = gigs.map((gig: any, index: number) => ({
+                id: gig.id || index,
+                name: gig.gig_name || gig.name || 'Unknown Gig',
+                status: gig.status || 'completed',
+                reward: gig.reward ? `$${gig.reward}` : '$0',
+                date: gig.date || ''
+              }));
+              setGigHistory(formattedGigs);
             }
           }
         } catch (error) {

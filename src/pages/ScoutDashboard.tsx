@@ -46,7 +46,7 @@ export default function ScoutDashboard() {
 
   // 2. Dynamic Seed Function (Exactly like Merchant)
   const handleSeedData = async () => {
-    const userId = user?.id || user?.user_id; 
+    const userId = (user as any)?.id || (user as any)?.user_id; 
     if (!userId) {
       toast({ title: "Error", description: "No user ID found. Please re-login." });
       return;
