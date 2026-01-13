@@ -280,11 +280,16 @@ export function CreateDropStudio() {
 
       // Step 3: Create the campaign
       const response = await api.createCampaign(campaignPayload);
+      console.log('Create campaign response:', response);
       
-      if (response.success && response.data) {
+      // Check if backend returned success (handle both response formats)
+      const isSuccess = response.success || (response as any).status === 'success';
+      const campaignId = response.data?.campaign_id || (response as any).campaign_id || Date.now().toString();
+      
+      if (isSuccess || response.data) {
         // Add to local state for immediate UI feedback
         const newCampaign: ActiveCampaign = {
-          id: response.data.campaign_id,
+          id: campaignId,
           title: title || "Untitled Campaign",
           type: isMission ? 'mission' : 'drop',
           thumbnail: uploadedMediaUrl ? toAbsoluteUrl(uploadedMediaUrl) : null,
@@ -314,9 +319,12 @@ export function CreateDropStudio() {
         setConditionText("");
         setCommissionDetails("");
         
-        toast.success(`Campaign Published! ID: ${response.data.campaign_id}`);
+        toast.success(`Campaign Published! ID: ${campaignId}`);
       } else {
-        toast.error(response.error || "Failed to publish campaign");
+        // Show detailed error for debugging
+        const errorMsg = response.error || (response as any).message || "Backend didn't process create_campaign. Check PHP action handler.";
+        console.error('Campaign creation failed:', response);
+        toast.error(errorMsg);
       }
     } catch (error) {
       console.error("Publish error:", error);

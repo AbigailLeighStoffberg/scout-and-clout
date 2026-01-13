@@ -130,10 +130,45 @@ export default function ScoutDashboard() {
             </div>
           </FadeUpItem>
 
-          <FadeUpItem><InfluencerWorkbench /></FadeUpItem>
-          <FadeUpItem><QuestCreator /></FadeUpItem>
-          <FadeUpItem><InfluencerMerchQR /></FadeUpItem>
-          <FadeUpItem><RecentContent /></FadeUpItem>
+          <FadeUpItem><div className="mt-6"><InfluencerWorkbench /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-6"><QuestCreator /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-6"><InfluencerMerchQR /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-8"><RecentContent /></div></FadeUpItem>
+          
+          {/* Gigs Section - Available Missions */}
+          <FadeUpItem>
+            <div id="available-gigs" className="mt-8 scroll-mt-6">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-xl font-semibold flex items-center gap-2">
+                  <Handshake className="h-5 w-5 text-purple-400" />
+                  Available Gigs
+                </h2>
+                <Button variant="ghost" className="text-purple-400">
+                  Browse All <ArrowUpRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {mockMissions.slice(0, 3).map((mission) => (
+                  <GlassCard key={mission.id} className="p-4 hover:border-purple-500/30 transition-colors">
+                    <div className="flex items-start justify-between mb-3">
+                      <span className="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-400 font-medium">
+                        {mission.category.toUpperCase()}
+                      </span>
+                      <span className="text-lg font-bold text-purple-400">+{mission.impactReward} pts</span>
+                    </div>
+                    <h3 className="font-semibold text-white mb-1">{mission.title}</h3>
+                    <p className="text-sm text-gray-400 mb-3 line-clamp-2">{mission.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-500">{mission.merchantName}</span>
+                      <Button size="sm" variant="outline" className="text-purple-400 border-purple-500/30">
+                        Accept
+                      </Button>
+                    </div>
+                  </GlassCard>
+                ))}
+              </div>
+            </div>
+          </FadeUpItem>
         </StaggeredFadeIn>
       </main>
 
