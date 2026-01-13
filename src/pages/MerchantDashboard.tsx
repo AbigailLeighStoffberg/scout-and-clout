@@ -10,7 +10,7 @@ import { TopInfluencersLeaderboard } from "@/components/merchant/TopInfluencersL
 import { CreateDropStudio } from "@/components/merchant/CreateDropStudio";
 import { CreateDropFAB } from "@/components/merchant/CreateDropWidget";
 import { QRStationCyberpunk } from "@/components/merchant/QRStationCyberpunk";
-import { InfluencerMerchAnalytics } from "@/components/merchant/InfluencerMerchAnalytics";
+
 import { mockMerchant } from "@/data/mockData";
 import { StaggeredFadeIn, FadeUpItem } from "@/components/effects/StaggeredFadeIn";
 import { useAppStore } from "@/store/useAppStore";
@@ -136,11 +136,6 @@ export default function MerchantDashboard() {
             </div>
           </FadeUpItem>
 
-          <FadeUpItem>
-            <div id="merch-analytics" className="mb-6 scroll-mt-6">
-              <InfluencerMerchAnalytics />
-            </div>
-          </FadeUpItem>
 
           <FadeUpItem>
             <div id="create-drop" className="mb-6 scroll-mt-6">

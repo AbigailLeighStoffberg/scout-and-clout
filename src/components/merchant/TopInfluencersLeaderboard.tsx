@@ -29,20 +29,21 @@ export function TopInfluencersLeaderboard() {
         try {
           const response = await api.getPartnerDashboard(String(userId));
           if (response.success && response.data?.top_influencers) {
-            // Generate placeholder avatars for influencers without avatar field
-            const avatarPlaceholders = [
-              'https://api.dicebear.com/7.x/avataaars/svg?seed=',
-              'https://api.dicebear.com/7.x/bottts/svg?seed=',
-              'https://api.dicebear.com/7.x/fun-emoji/svg?seed='
+            // Real people placeholder images
+            const realAvatars = [
+              'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face'
             ];
             
             const formattedData = response.data.top_influencers.map((inf: any, index: number) => ({
               ...inf,
               id: inf.id || index,
-              // Generate avatar from name if not provided
               avatar: inf.avatar 
                 ? (inf.avatar.startsWith('http') ? inf.avatar : toAbsoluteUrl(inf.avatar))
-                : `${avatarPlaceholders[index % 3]}${encodeURIComponent(inf.name || 'user')}`,
+                : realAvatars[index % realAvatars.length],
               traffic: Number(inf.traffic) || 0,
               sales: Number(inf.sales) || 0,
               revenue: Number(inf.revenue) || 0,

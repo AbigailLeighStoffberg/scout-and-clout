@@ -23,12 +23,11 @@ export function QRStationCyberpunk() {
         try {
           const response = await api.getPartnerDashboard(String(userId));
           
-          // FIX for the TypeScript error in your screenshot:
-          // We cast data to 'any' so it knows 'today_scans' exists
-          const scanCount = (response.data as any)?.today_scans;
-          
-          if (typeof scanCount === 'number') {
-            setScans(scanCount);
+          // Get scans from chart_data's latest day (first item is most recent)
+          const chartData = response.data?.chart_data || [];
+          if (chartData.length > 0) {
+            const latestDay = chartData[0];
+            setScans(Number(latestDay.scans) || 0);
           }
         } catch (error) {
           console.error("Error fetching QR stats:", error);
