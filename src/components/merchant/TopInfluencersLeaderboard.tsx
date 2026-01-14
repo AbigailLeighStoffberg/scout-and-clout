@@ -109,23 +109,13 @@ export function TopInfluencersLeaderboard() {
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-white truncate">{influencer.name}</p>
               <div className="flex items-center gap-3 text-xs text-gray-500">
-                <span className="flex items-center gap-1">
-                  <Eye className="h-3 w-3" />
-                  {(influencer.traffic || 0).toLocaleString()} 
-                </span>
-                <span className="flex items-center gap-1">
-                  <DollarSign className="h-3 w-3" />
-                  {influencer.sales} sales
-                </span>
+                
+              
               </div>
             </div>
 
             <div className="text-right">
               <p className="font-bold" style={{ color: PARTNER_COLOR }}>${(influencer.revenue || 0).toLocaleString()}</p>
-              <div className="flex items-center gap-0.5 text-xs justify-end text-gray-500">
-                <TrendingUp className={`h-3 w-3 ${influencer.trend < 0 ? 'rotate-180' : ''}`} />
-                {influencer.trend >= 0 ? '+' : ''}{influencer.trend}%
-              </div>
             </div>
           </motion.div>
         ))}
