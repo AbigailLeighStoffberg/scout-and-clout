@@ -80,42 +80,36 @@ export default function ScoutDashboard() {
       <ScoutSidebar />
 
       <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
-        {/* Top Header Row with Seed Button */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <div className="md:hidden">
-            <RoleSwitcher variant="curator" />
-          </div>
-          
-          <div className="ml-auto">
-            <Button 
-              onClick={handleSeedData} 
-              disabled={isSeeding}
-              variant="outline" 
-              size="sm" 
-              className="gap-2 border-purple-500/50 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400"
-            >
-              {isSeeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-              {isSeeding ? "Syncing..." : "Seed My Stats"}
-            </Button>
-          </div>
-        </div>
-
         <StaggeredFadeIn staggerDelay={0.08}>
           <FadeUpItem>
             <ProfileHeader className="mb-4" />
+
+            {/* Seed button below cover */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                onClick={handleSeedData}
+                disabled={isSeeding}
+                variant="outline"
+                size="sm"
+                className="gap-2 border-purple-500/50 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400"
+              >
+                {isSeeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                {isSeeding ? "Syncing..." : "Seed My Stats"}
+              </Button>
+            </div>
           </FadeUpItem>
 
           <FadeUpItem>
-            <div className="grid gap-6 lg:grid-cols-2 mb-6">
+            <div className="mt-8 grid gap-6 lg:grid-cols-2">
               <div id="earnings" className="scroll-mt-6">
                 <EarningsRadialChart key={`earnings-${refreshKey}`} />
               </div>
-              
-              <div id="gigs" className="flex flex-col scroll-mt-6">
+
+              <div id="drops" className="flex flex-col scroll-mt-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="font-heading text-xl font-semibold flex items-center gap-2">
                     <List className="h-5 w-5 text-purple-400" />
-                    My Quest Lines
+                    My Drops
                   </h2>
                   <div className="flex items-center gap-2">
                     <Button variant="ghost" className="text-purple-400">View All <ArrowUpRight className="ml-1 h-4 w-4" /></Button>
@@ -130,10 +124,10 @@ export default function ScoutDashboard() {
             </div>
           </FadeUpItem>
 
-          <FadeUpItem><div className="mt-6"><InfluencerWorkbench /></div></FadeUpItem>
-          <FadeUpItem><div className="mt-6"><QuestCreator /></div></FadeUpItem>
-          <FadeUpItem><div className="mt-6"><InfluencerMerchQR /></div></FadeUpItem>
-          <FadeUpItem><div className="mt-8"><RecentContent /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-8"><InfluencerWorkbench /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-8"><QuestCreator /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-8"><InfluencerMerchQR /></div></FadeUpItem>
+          <FadeUpItem><div className="mt-10"><RecentContent /></div></FadeUpItem>
           
           {/* Gigs Section - Available Missions */}
           <FadeUpItem>

@@ -46,8 +46,8 @@ export function CinematicBanner({ businessName, coverUrl, profilePic }: Cinemati
 
       // Step 2: Save to user profile with context "partner" for merchant
       const updatePayload = type === 'cover' 
-        ? { cover_url: imageUrl, context: 'partner' } 
-        : { profile_pic: imageUrl, context: 'partner' };
+        ? { cover_url: imageUrl, context: 'partner' as const } 
+        : { profile_pic: imageUrl, context: 'partner' as const };
 
       const updateResponse = await api.updateUser(userId, updatePayload);
 

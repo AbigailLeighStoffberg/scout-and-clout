@@ -48,9 +48,9 @@ export function ProfileHeader({ className }: ProfileHeaderProps) {
       const imageUrl = toAbsoluteUrl(uploadResponse.data.url);
 
       // Step 2: Save to user profile with context "personal" for influencer
-      const updatePayload = type === 'cover' 
-        ? { cover_url: imageUrl, context: 'personal' } 
-        : { profile_pic: imageUrl, context: 'personal' };
+    const updatePayload = type === 'cover' 
+      ? { cover_url: imageUrl, context: 'personal' as const } 
+      : { profile_pic: imageUrl, context: 'personal' as const };
 
       const updateResponse = await api.updateUser(userId, updatePayload);
 

@@ -6,6 +6,7 @@ import {
   Trash2, Pencil
 } from "lucide-react";
 import { api, toAbsoluteUrl } from "@/services/api";
+import { useAppStore } from "@/store/useAppStore";
 
 
 interface ActiveCampaign {
@@ -92,6 +93,7 @@ function MapRecenter({ coords, trigger }: { coords: [number, number]; trigger: n
 }
 
 export function CreateDropStudio() {
+  const { user } = useAppStore();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -124,8 +126,11 @@ export function CreateDropStudio() {
   // Fetch campaigns from backend on mount
   useEffect(() => {
     const fetchCampaigns = async () => {
+      const partnerId = String((user as any)?.id || (user as any)?.user_id || "");
+      if (!partnerId) return;
+
       try {
-        const response = await api.getCampaigns(1); // Hardcoded partner_id for now
+        const response = await api.getCampaigns(Number(partnerId));
         if (response.success && response.data) {
           const campaigns: ActiveCampaign[] = response.data.map((c: any) => {
             const rawMediaUrl = c.media_url ?? c.image_url ?? c.thumbnail ?? null;
@@ -152,7 +157,7 @@ export function CreateDropStudio() {
       }
     };
     fetchCampaigns();
-  }, []);
+  }, [user]);
 
   // Geolocation on mount
   useEffect(() => {
@@ -258,9 +263,11 @@ export function CreateDropStudio() {
         }
       }
 
+      const partnerId = Number((user as any)?.id || (user as any)?.user_id);
+
       // Step 2: Prepare campaign data with uploaded media URL
       const campaignPayload = {
-        partner_id: 1, // Hardcoded for now until auth is ready
+        partner_id: Number.isFinite(partnerId) ? partnerId : 0,
         title: title || "Untitled Campaign",
         description: description || "",
         type: isMission ? ('mission' as const) : ('drop' as const),
@@ -270,7 +277,7 @@ export function CreateDropStudio() {
         end_date: endDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         reward_points: isMission ? parseInt(missionReward) || 500 : undefined,
         mission_action: isMission ? missionAction : undefined,
-        media_url: uploadedMediaUrl, // Use the uploaded URL
+        media_url: uploadedMediaUrl,
         // Drop-specific
         reward_text: !isMission ? rewardText : undefined,
         condition_text: !isMission ? conditionText : undefined,
@@ -383,9 +390,9 @@ export function CreateDropStudio() {
       <div className="p-6 pb-0">
         <div className="flex items-center gap-2 mb-1">
           <Sparkles className="h-5 w-5" style={{ color: PARTNER_COLOR }} />
-          <h4 className="font-heading font-semibold text-white">Quest Line / Gig Generator</h4>
+          <h4 className="font-heading font-semibold text-white">Drop / Gig Generator</h4>
         </div>
-        <p className="text-xs text-gray-400">Create 'Loot Drops' (Quest Lines) to post to the user app or Gigs for influencers.</p>
+        <p className="text-xs text-gray-400">Publish Drops to your active feed, or publish Gigs for influencers.</p>
       </div>
 
       {/* Split Studio Layout */}

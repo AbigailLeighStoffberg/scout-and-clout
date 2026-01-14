@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, DollarSign, Eye, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { api, toAbsoluteUrl } from "@/services/api";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -10,10 +10,7 @@ interface Influencer {
   id: number;
   name: string;
   avatar: string;
-  traffic: number;
-  sales: number;
   revenue: number;
-  trend: number;
 }
 
 export function TopInfluencersLeaderboard() {

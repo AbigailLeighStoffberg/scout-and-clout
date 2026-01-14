@@ -312,7 +312,7 @@ export const api = {
   },
 
   // Update user profile (profile_pic, cover_url, etc.)
-  updateUser: async (userId: string, updates: { profile_pic?: string; cover_url?: string }): Promise<ApiResponse<{ updated: boolean }>> => {
+  updateUser: async (userId: string, updates: { profile_pic?: string; cover_url?: string; context?: 'personal' | 'partner' }): Promise<ApiResponse<{ updated: boolean }>> => {
     return fetchApi<{ updated: boolean }>(`${BASE_URL}?action=update_user`, {
       method: 'POST',
       body: JSON.stringify({ id: userId, ...updates }),
