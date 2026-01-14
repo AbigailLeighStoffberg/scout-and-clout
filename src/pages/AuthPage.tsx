@@ -273,9 +273,18 @@ export default function AuthPage() {
           cover_url: uploadedCoverUrl,
         });
 
-        if (response.success && response.data) {
+        if (response.success) {
+          // Get user_id from response - PHP returns it as user_id
+          const userId = (response.data as any)?.user_id || (response as any)?.user_id;
+          
+          if (!userId) {
+            console.error("Registration response missing user_id:", response);
+            toast.error("Registration succeeded but user ID was not returned. Please try logging in.");
+            return;
+          }
+          
           const userData = {
-            id: (response.data as any).user_id || response.data.id,
+            id: userId,
             email,
             name: role === "merchant" ? businessName : username,
             username: username || businessName,

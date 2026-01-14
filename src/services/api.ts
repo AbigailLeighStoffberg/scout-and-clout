@@ -145,12 +145,12 @@ async function fetchApi<T>(
         };
       }
 
-      // Otherwise treat remaining fields as the payload.
-      const { status, ...payload } = rawData;
+      // Otherwise treat remaining fields as the payload (e.g., user_id from register).
+      const { status, message, ...payload } = rawData;
       return {
         success: true,
         data: payload as T,
-        message: rawData.message,
+        message: message,
       };
     }
 

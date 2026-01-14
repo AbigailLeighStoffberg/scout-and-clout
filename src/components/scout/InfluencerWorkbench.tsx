@@ -316,6 +316,19 @@ export function InfluencerWorkbench() {
                     className="w-full h-12 text-white font-semibold mt-4" 
                     style={{ background: "linear-gradient(to right, #A759D8, #DB529F)" }}
                     disabled={!caption && !hasMedia}
+                    onClick={() => {
+                      if (scheduledTime) {
+                        toast.success(`Content scheduled for ${new Date(scheduledTime).toLocaleString()}!`);
+                      } else {
+                        toast.success("Content posted successfully! 🎉");
+                      }
+                      // Reset form
+                      setCaption("");
+                      setHasMedia(false);
+                      setPreviewImage(null);
+                      setHashtags([]);
+                      setScheduledTime("");
+                    }}
                   >
                     <Send className="mr-2 h-4 w-4" />
                     {scheduledTime ? "Schedule" : "Post Now"}

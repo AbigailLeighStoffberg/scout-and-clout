@@ -36,15 +36,12 @@ export function TopInfluencersLeaderboard() {
             ];
             
             const formattedData = response.data.top_influencers.map((inf: any, index: number) => ({
-              ...inf,
               id: inf.id || index,
+              name: inf.name || inf.username || `Influencer ${index + 1}`,
               avatar: inf.avatar 
                 ? (inf.avatar.startsWith('http') ? inf.avatar : toAbsoluteUrl(inf.avatar))
                 : realAvatars[index % realAvatars.length],
-              traffic: Number(inf.traffic) || 0,
-              sales: Number(inf.sales) || 0,
               revenue: Number(inf.revenue) || 0,
-              trend: inf.trend ? parseFloat(Number(inf.trend).toFixed(2)) : 0,
             }));
             setTopInfluencers(formattedData);
           }
