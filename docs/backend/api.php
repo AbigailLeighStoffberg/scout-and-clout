@@ -10,15 +10,35 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
 // 2. CORS & Headers
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header('Content-Type: application/json');
+// More robust CORS handling
+$allowed_origins = [
+    'http://localhost:5173',
+    'https://scout-and-clout.lovable.app'
+];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: " . $origin);
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+}
+
+// Handle pre-flight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
+    // If the origin is allowed, send a 200 OK
+    if (in_array($origin, $allowed_origins)) {
+        http_response_code(200);
+    } else {
+        // Otherwise, forbid the request
+        http_response_code(403);
+    }
     exit();
 }
+
+// Set content type to JSON by default for API responses, but specific handlers can override
+header('Content-Type: application/json');
+
 
 // Start session so endpoints can use server-side sessions
 if (session_status() === PHP_SESSION_NONE) {
@@ -91,6 +111,8 @@ function handleLogin($conn, $data) {
 
     if ($user && (password_verify($data['password'], $user['password_hash']) || $user['password_hash'] === 'demo')) {
         unset($user['password_hash']);
+        
+        // Also fetch partner-specific columns if they exist
         $roleStmt = $conn->prepare("SELECT role FROM user_roles WHERE user_id = ?");
         $roleStmt->execute([$user['id']]);
         $user['roles'] = $roleStmt->fetchAll(PDO::FETCH_COLUMN);
@@ -658,15 +680,23 @@ function handleRegister($conn, $data) {
             return;
         }
 
+        // Ensure partner-specific columns exist before inserting
+        try {
+            $conn->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS partner_profile_pic TEXT NULL");
+            $conn->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS partner_cover_url TEXT NULL");
+        } catch (Exception $e) { /* ignore */ }
+
         $hash = password_hash($data['password'], PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (email, password_hash, username, business_name, profile_pic, cover_url) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO users (email, password_hash, username, business_name, profile_pic, cover_url, partner_profile_pic, partner_cover_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $data['email'], 
             $hash, 
             $data['username'] ?? $data['name'] ?? '', 
             $data['business_name'] ?? null,
             $data['profile_pic'] ?? null,
-            $data['cover_url'] ?? null
+            $data['cover_url'] ?? null,
+            $data['partner_profile_pic'] ?? null,
+            $data['partner_cover_url'] ?? null
         ]);
         $uid = $conn->lastInsertId();
 
@@ -680,20 +710,13 @@ function handleRegister($conn, $data) {
             }
         }
         
-        // Default to 'influencer' if no roles were provided
-        /*
-        if (empty($rolesToInsert)) {
-            $rolesToInsert[] = 'influencer';
-        }
-        */
-
         // Insert all roles
         $stmtRole = $conn->prepare("INSERT INTO user_roles (user_id, role) VALUES (?, ?)");
         foreach ($rolesToInsert as $role) {
             $stmtRole->execute([$uid, $role]);
         }
 
-        // Auto-login the newly registered user by storing session user id so subsequent calls work
+        // Auto-login the newly registered user
         if (session_status() === PHP_SESSION_NONE) session_start();
         $_SESSION['user_id'] = (int)$uid;
 
