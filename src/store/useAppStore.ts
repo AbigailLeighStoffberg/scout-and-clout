@@ -29,7 +29,9 @@ interface AppState {
 export const useAppStore = create<AppState>((set, get) => {
   const normalizeRole = (r: any): UserRole | null => {
     if (!r) return null;
-    return r === "influencer" ? "curator" : (r as UserRole);
+    // Backend may send legacy/alt role labels
+    if (r === "influencer" || r === "adventurer") return "curator";
+    return r as UserRole;
   };
 
   const normalizeRoles = (u: any): UserRole[] | undefined => {

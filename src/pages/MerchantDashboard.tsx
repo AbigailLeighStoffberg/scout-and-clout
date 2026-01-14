@@ -90,28 +90,27 @@ export default function MerchantDashboard() {
       <MerchantSidebar />
 
       <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <div className="md:hidden">
-            <RoleSwitcher variant="merchant" />
-          </div>
-          
-          <div className="ml-auto">
-            <Button 
-              onClick={handleSeedData} 
-              disabled={isSeeding}
-              variant="outline" 
-              size="sm" 
-              className="gap-2 border-teal-500/50 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400"
-            >
-              {isSeeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-              {isSeeding ? "Generating..." : "Seed Unique Analytics"}
-            </Button>
-          </div>
+        <div className="md:hidden mb-4">
+          <RoleSwitcher variant="merchant" />
         </div>
 
         <StaggeredFadeIn staggerDelay={0.08}>
           <FadeUpItem>
             <CinematicBanner businessName={businessName} coverUrl={coverUrl} profilePic={profilePic} />
+
+            {/* Seed button below cover */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                onClick={handleSeedData}
+                disabled={isSeeding}
+                variant="outline"
+                size="sm"
+                className="gap-2 border-teal-500/50 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400"
+              >
+                {isSeeding ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                {isSeeding ? "Generating..." : "Seed Unique Analytics"}
+              </Button>
+            </div>
           </FadeUpItem>
 
           <FadeUpItem>

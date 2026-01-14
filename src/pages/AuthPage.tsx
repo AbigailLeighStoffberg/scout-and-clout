@@ -69,8 +69,8 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [username, setUsername] = useState("");
-  const [profileImageBase64, setProfileImageBase64] = useState<string | null>(null);
-  const [coverImageBase64, setCoverImageBase64] = useState<string | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,10 +91,9 @@ export default function AuthPage() {
     const file = e.target.files?.[0];
     if (file) {
       try {
+        setProfileImageFile(file);
         const preview = URL.createObjectURL(file);
         setProfileImagePreview(preview);
-        const base64 = await compressImage(file, 400, 400, 0.8);
-        setProfileImageBase64(base64);
       } catch (error) {
         console.error('Failed to process profile image:', error);
         toast.error('Failed to process image. Please try a different file.');
@@ -106,10 +105,9 @@ export default function AuthPage() {
     const file = e.target.files?.[0];
     if (file) {
       try {
+        setCoverImageFile(file);
         const preview = URL.createObjectURL(file);
         setCoverImagePreview(preview);
-        const base64 = await compressImage(file, 1200, 600, 0.7);
-        setCoverImageBase64(base64);
       } catch (error) {
         console.error('Failed to process cover image:', error);
         toast.error('Failed to process image. Please try a different file.');
@@ -242,6 +240,28 @@ export default function AuthPage() {
         
         const finalBusinessName = role === "merchant" ? businessName : (alsoRegisterAsPartner ? businessName : undefined);
         
+        // Upload selected images first, then store only the returned URLs in the DB
+        let uploadedProfileUrl: string | undefined;
+        let uploadedCoverUrl: string | undefined;
+
+        if (profileImageFile) {
+          const up = await api.uploadMedia(profileImageFile);
+          if (!up.success || !up.data?.url) {
+            toast.error(up.error || "Failed to upload profile image");
+            return;
+          }
+          uploadedProfileUrl = up.data.url;
+        }
+
+        if (coverImageFile) {
+          const up = await api.uploadMedia(coverImageFile);
+          if (!up.success || !up.data?.url) {
+            toast.error(up.error || "Failed to upload cover image");
+            return;
+          }
+          uploadedCoverUrl = up.data.url;
+        }
+
         const response = await api.register({
           email,
           password,
@@ -249,8 +269,8 @@ export default function AuthPage() {
           role: primaryApiRole,
           username: username || businessName,
           business_name: finalBusinessName,
-          profile_pic: profileImageBase64 || undefined,
-          cover_url: coverImageBase64 || undefined,
+          profile_pic: uploadedProfileUrl,
+          cover_url: uploadedCoverUrl,
         });
 
         if (response.success && response.data) {
@@ -262,8 +282,8 @@ export default function AuthPage() {
             role: primaryAppRole,
             roles: userRoles,
             activeRole: primaryAppRole,
-            profile_pic: profileImageBase64 || undefined,
-            cover_url: coverImageBase64 || undefined,
+            profile_pic: uploadedProfileUrl,
+            cover_url: uploadedCoverUrl,
             businessName: finalBusinessName,
             business_name: finalBusinessName,
           };
