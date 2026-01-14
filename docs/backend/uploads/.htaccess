@@ -1,0 +1,12 @@
+# Prevent PHP execution in uploads
+<FilesMatch "\.(php|phtml|php5|php7)$">
+  Require all denied
+</FilesMatch>
+
+# Recommended: allow caching for images
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/gif "access plus 30 days"
+</IfModule>

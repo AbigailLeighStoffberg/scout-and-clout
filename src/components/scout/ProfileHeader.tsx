@@ -6,8 +6,8 @@ import { useAppStore } from "@/store/useAppStore";
 import { api, toAbsoluteUrl } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-const DEFAULT_COVER = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&q=80";
+import defaultPfp from "@/assets/pfp.png";
+import defaultCover from "@/assets/lacover.png";
 
 interface ProfileHeaderProps {
   className?: string;
@@ -23,8 +23,8 @@ export function ProfileHeader({ className }: ProfileHeaderProps) {
   
   // Get user data with fallbacks - use personal images for influencer
   const displayName = (user as any)?.username || user?.name || mockCurator.name;
-  const profilePic = (user as any)?.profile_pic || user?.avatar || mockCurator.avatar;
-  const coverUrl = (user as any)?.cover_url || DEFAULT_COVER;
+  const profilePic = (user as any)?.profile_pic || user?.avatar || defaultPfp;
+  const coverUrl = (user as any)?.cover_url || defaultCover;
   const userId = (user as any)?.id;
 
   const handleImageUpload = async (file: File, type: 'profile' | 'cover') => {

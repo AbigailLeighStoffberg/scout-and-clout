@@ -28,7 +28,7 @@ interface RegisterData {
   email: string;
   password: string;
   name: string;
-  role: 'merchant' | 'influencer';
+  role: ('merchant' | 'influencer')[] | 'merchant' | 'influencer';
   username?: string;
   business_name?: string;
   profile_pic?: string;

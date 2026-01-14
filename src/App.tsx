@@ -18,7 +18,7 @@ function ProtectedRoute({
   requiredRole,
 }: {
   children: React.ReactNode;
-  requiredRole?: "merchant" | "curator";
+  requiredRole?: "merchant" | "curator" | "influencer" | "partner";
 }) {
   const { isAuthenticated, user } = useAppStore();
 

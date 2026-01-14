@@ -262,11 +262,13 @@ export default function AuthPage() {
           uploadedCoverUrl = up.data.url;
         }
 
+        const apiRoles = userRoles.map(r => r === 'curator' ? 'influencer' : r);
+
         const response = await api.register({
           email,
           password,
           name: role === "merchant" ? businessName : username,
-          role: primaryApiRole,
+          role: apiRoles, // Pass the array of roles
           username: username || businessName,
           business_name: finalBusinessName,
           profile_pic: uploadedProfileUrl,
@@ -360,22 +362,23 @@ export default function AuthPage() {
 
         if (response.success && response.data) {
           const apiUser = ((response.data as any).user ?? response.data) as any;
+          const apiRoles = apiUser.roles as string[] | undefined;
 
           // Normalize backend roles to app roles
-          const apiRole = (apiUser.role as string | undefined) ?? undefined;
+          // Use the first role in the array as the primary/default role
+          const primaryApiRole = apiRoles && apiRoles.length > 0 ? apiRoles[0] : undefined;
           const normalizedRole: "merchant" | "curator" | undefined =
-            apiRole === "influencer" ? "curator" : (apiRole as any);
+            primaryApiRole === "influencer" ? "curator" : (primaryApiRole as any);
 
           if (!normalizedRole) {
-            toast.error("Login succeeded, but your account role is missing. Please contact support.");
+            toast.error("Login succeeded, but your account has no assigned roles. Please contact support.");
             return;
           }
 
-          // Check if user has multiple roles from API
-          const apiRoles = apiUser.roles as string[] | undefined;
+          // Map all available roles
           const userRoles: ("merchant" | "curator")[] = apiRoles
             ? apiRoles.map((r: string) => (r === "influencer" ? "curator" : (r as "merchant" | "curator")))
-            : [normalizedRole];
+            : [];
 
           const baseUserData = {
             ...apiUser,
@@ -384,21 +387,19 @@ export default function AuthPage() {
             activeRole: normalizedRole,
           };
 
-          // Check if user tried to login with a role they don't have
-          if (role !== normalizedRole && !userRoles.includes(role)) {
-            // Store data and show dialog
+          // Check if user has the role they are trying to log into
+          if (userRoles.includes(role)) {
+            // The user has the role, log them in to the selected studio
+            const finalUserData = { ...baseUserData, role: role, activeRole: role };
+            setUser(finalUserData as any);
+            setDarkMode(role === "curator");
+            toast.success("Welcome back!");
+            navigate(role === "merchant" ? "/merchant" : "/scout");
+          } else {
+            // The user does NOT have the role, show the mismatch dialog
             setMismatchedUserData(baseUserData);
             setAttemptedRole(role);
             setShowRoleMismatchDialog(true);
-          } else {
-            // If they DO have the selected tab role, land them in that studio (fixes "always influencer" issue)
-            const desiredRole = userRoles.includes(role) ? role : normalizedRole;
-            const finalUserData = { ...baseUserData, role: desiredRole, activeRole: desiredRole };
-
-            setUser(finalUserData as any);
-            setDarkMode(desiredRole === "curator");
-            toast.success("Welcome back!");
-            navigate(desiredRole === "merchant" ? "/merchant" : "/scout");
           }
         } else {
           const errorMsg = response.error || "Login failed";

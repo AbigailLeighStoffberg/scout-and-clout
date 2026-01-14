@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import defaultPfp from "@/assets/pfp.png";
+import defaultCover from "@/assets/lacover.png";
 
 export default function MerchantDashboard() {
   const { user, setDarkMode } = useAppStore();
@@ -82,8 +84,8 @@ export default function MerchantDashboard() {
   };
 
   const businessName = (user as any)?.business_name || (user as any)?.businessName || mockMerchant.businessName;
-  const coverUrl = (user as any)?.partner_cover_url || (user as any)?.cover_url;
-  const profilePic = (user as any)?.partner_profile_pic || (user as any)?.profile_pic || user?.avatar;
+  const coverUrl = (user as any)?.partner_cover_url || (user as any)?.cover_url || defaultCover;
+  const profilePic = (user as any)?.partner_profile_pic || (user as any)?.profile_pic || user?.avatar || defaultPfp;
 
   return (
     <div className="min-h-screen bg-[#0f1929] text-white selection:bg-teal-500/30" key={refreshKey}>
@@ -99,7 +101,7 @@ export default function MerchantDashboard() {
             <CinematicBanner businessName={businessName} coverUrl={coverUrl} profilePic={profilePic} />
 
             {/* Seed button below cover */}
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 mb-6 flex justify-end">
               <Button
                 onClick={handleSeedData}
                 disabled={isSeeding}
