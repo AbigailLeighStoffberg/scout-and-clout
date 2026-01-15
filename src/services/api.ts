@@ -160,9 +160,21 @@ async function fetchApi<T>(
     };
   } catch (error) {
     console.error('API Error:', error);
+
+    const message = error instanceof Error ? error.message : 'Unknown error occurred';
+
+    // `Failed to fetch` is almost always: CORS blocked, DNS/SSL issue, or backend down.
+    if (typeof message === 'string' && message.toLowerCase().includes('failed to fetch')) {
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      return {
+        success: false,
+        error: `Failed to reach API (CORS / server offline). Your site origin is ${origin}. Ensure your PHP api.php sends Access-Control-Allow-Origin for this origin (and handles OPTIONS) and that ${API_ORIGIN} is reachable.`,
+      };
+    }
+
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: message,
     };
   }
 }

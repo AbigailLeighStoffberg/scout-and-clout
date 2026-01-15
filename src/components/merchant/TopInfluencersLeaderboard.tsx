@@ -102,10 +102,6 @@ export function TopInfluencersLeaderboard() {
 
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-white truncate">{influencer.name}</p>
-              <div className="flex items-center gap-3 text-xs text-gray-500">
-                
-              
-              </div>
             </div>
 
             <div className="text-right">
