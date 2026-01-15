@@ -88,7 +88,7 @@ export function TrafficSourcesChart() {
 
   if (loading) {
     return (
-      <div className="bg-[#0f1929] rounded-2xl border border-[#1e3a5f]/30 p-6 h-full flex items-center justify-center">
+      <div className="bg-[#0f1929] rounded-xl sm:rounded-2xl border border-[#1e3a5f]/30 p-4 sm:p-6 h-full flex items-center justify-center min-h-[280px]">
         <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
       </div>
     );
@@ -100,13 +100,13 @@ export function TrafficSourcesChart() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
       whileHover={{ y: -2 }}
-      className="bg-[#0f1929] rounded-2xl border border-[#1e3a5f]/30 p-6 h-full"
+      className="bg-[#0f1929] rounded-xl sm:rounded-2xl border border-[#1e3a5f]/30 p-4 sm:p-6 h-full"
     >
-      <h3 className="text-lg font-extrabold text-white mb-4 font-heading">
+      <h3 className="text-base sm:text-lg font-extrabold text-white mb-3 sm:mb-4 font-heading">
         Traffic Sources
       </h3>
 
-      <div className="h-[200px]">
+      <div className="h-[160px] sm:h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -140,20 +140,20 @@ export function TrafficSourcesChart() {
         </ResponsiveContainer>
       </div>
 
-      <div className="space-y-2 mt-4">
+      <div className="space-y-2 mt-3 sm:mt-4">
         {trafficData.map((item) => (
           <div key={item.name} className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <div 
-                className="w-3 h-3 rounded-full" 
+                className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" 
                 style={{ backgroundColor: item.color }} 
               />
-              <span className="text-sm text-gray-400 flex items-center gap-1.5" style={{ color: item.color }}>
-                {icons[item.key] || <Users className="h-4 w-4"/>} 
-                {item.name}
+              <span className="text-xs sm:text-sm text-gray-400 flex items-center gap-1 sm:gap-1.5" style={{ color: item.color }}>
+                {icons[item.key] || <Users className="h-3 w-3 sm:h-4 sm:w-4"/>} 
+                <span className="truncate max-w-[100px] sm:max-w-none">{item.name}</span>
               </span>
             </div>
-            <span className="text-sm font-semibold text-white">{item.percentage}%</span>
+            <span className="text-xs sm:text-sm font-semibold text-white">{item.percentage}%</span>
           </div>
         ))}
       </div>

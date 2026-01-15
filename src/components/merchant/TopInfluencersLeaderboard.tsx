@@ -57,7 +57,7 @@ export function TopInfluencersLeaderboard() {
 
   if (loading) {
     return (
-      <div className="bg-[#0f1929] rounded-2xl border border-[#1e3a5f]/30 p-6 h-full flex items-center justify-center">
+      <div className="bg-[#0f1929] rounded-xl sm:rounded-2xl border border-[#1e3a5f]/30 p-4 sm:p-6 h-full flex items-center justify-center min-h-[200px]">
         <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
       </div>
     );
@@ -69,18 +69,18 @@ export function TopInfluencersLeaderboard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
       whileHover={{ y: -2 }}
-      className="bg-[#0f1929] rounded-2xl border border-[#1e3a5f]/30 p-6 h-full"
+      className="bg-[#0f1929] rounded-xl sm:rounded-2xl border border-[#1e3a5f]/30 p-4 sm:p-6 h-full"
     >
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-extrabold text-white font-heading">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-extrabold text-white font-heading">
           Top Influencers
         </h3>
-        <span className="text-xs text-gray-400 bg-white/5 px-2 py-1 rounded-full border border-white/10">
+        <span className="text-[10px] sm:text-xs text-gray-400 bg-white/5 px-2 py-1 rounded-full border border-white/10">
           By Revenue
         </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         {topInfluencers.map((influencer, index) => (
           <motion.div
             key={influencer.id}
@@ -88,24 +88,24 @@ export function TopInfluencersLeaderboard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 * index }}
             whileHover={{ scale: 1.02, x: 5 }}
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
+            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
           >
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-white/5 text-gray-500">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold bg-white/5 text-gray-500 flex-shrink-0">
               {index + 1}
             </div>
 
             <img
               src={influencer.avatar}
               alt={influencer.name}
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-white/10"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white/10 flex-shrink-0"
             />
 
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-white truncate">{influencer.name}</p>
+              <p className="text-sm sm:text-base font-semibold text-white truncate">{influencer.name}</p>
             </div>
 
-            <div className="text-right">
-              <p className="font-bold" style={{ color: PARTNER_COLOR }}>${(influencer.revenue || 0).toLocaleString()}</p>
+            <div className="text-right flex-shrink-0">
+              <p className="text-sm sm:text-base font-bold" style={{ color: PARTNER_COLOR }}>${(influencer.revenue || 0).toLocaleString()}</p>
             </div>
           </motion.div>
         ))}

@@ -91,8 +91,8 @@ export default function MerchantDashboard() {
     <div className="min-h-screen bg-[#0f1929] text-white selection:bg-teal-500/30" key={refreshKey}>
       <MerchantSidebar />
 
-      <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
-        <div className="md:hidden mb-4">
+      <main className="md:ml-64 p-3 sm:p-4 md:p-8 pb-24 md:pb-8">
+        <div className="md:hidden mb-3 sm:mb-4">
           <RoleSwitcher variant="merchant" />
         </div>
 
@@ -101,7 +101,7 @@ export default function MerchantDashboard() {
             <CinematicBanner businessName={businessName} coverUrl={coverUrl} profilePic={profilePic} />
 
             {/* Seed button below cover */}
-            <div className="mt-4 mb-6 flex justify-end">
+            <div className="mt-3 sm:mt-4 mb-4 sm:mb-6 flex justify-end">
               <Button
                 onClick={handleSeedData}
                 disabled={isSeeding}
@@ -116,7 +116,7 @@ export default function MerchantDashboard() {
           </FadeUpItem>
 
           <FadeUpItem>
-            <div id="analytics" className="grid gap-6 lg:grid-cols-3 mb-6 scroll-mt-6">
+            <div id="analytics" className="grid gap-4 sm:gap-6 lg:grid-cols-3 mb-4 sm:mb-6 scroll-mt-6">
               <div className="lg:col-span-2">
                 <CombinedAnalyticsChart key={`chart-${refreshKey}`} />
               </div>
@@ -127,7 +127,7 @@ export default function MerchantDashboard() {
           </FadeUpItem>
 
           <FadeUpItem>
-            <div className="grid gap-6 lg:grid-cols-12 mb-6">
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-12 mb-4 sm:mb-6">
               <div id="influencers" className="lg:col-span-8 scroll-mt-6">
                 <TopInfluencersLeaderboard key={`leaderboard-${refreshKey}`} />
               </div>
@@ -139,7 +139,7 @@ export default function MerchantDashboard() {
 
 
           <FadeUpItem>
-            <div id="create-drop" className="mb-6 scroll-mt-6">
+            <div id="create-drop" className="mb-4 sm:mb-6 scroll-mt-6">
               <CreateDropStudio />
             </div>
           </FadeUpItem>

@@ -85,7 +85,7 @@ export function CinematicBanner({ businessName, coverUrl, profilePic }: Cinemati
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="relative h-40 w-full rounded-3xl overflow-hidden mb-6"
+      className="relative h-32 sm:h-40 w-full rounded-2xl sm:rounded-3xl overflow-hidden mb-4 sm:mb-6"
     >
       {/* Hidden file inputs */}
       <input
@@ -132,19 +132,19 @@ export function CinematicBanner({ businessName, coverUrl, profilePic }: Cinemati
       </motion.button>
       
       {/* Content */}
-      <div className="relative z-10 h-full flex items-center px-8">
+      <div className="relative z-10 h-full flex items-center px-4 sm:px-8">
         {/* Profile Picture with Edit Overlay */}
         {profilePic && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="mr-6 flex-shrink-0 relative group"
+            className="mr-3 sm:mr-6 flex-shrink-0 relative group"
           >
             <img
               src={profilePic}
               alt="Profile"
-              className="h-20 w-20 rounded-2xl object-cover border-2 border-white/20 shadow-xl"
+              className="h-14 w-14 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl object-cover border-2 border-white/20 shadow-xl"
             />
             {/* Edit Profile Pic Overlay */}
             <motion.button
@@ -175,7 +175,7 @@ export function CinematicBanner({ businessName, coverUrl, profilePic }: Cinemati
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-3xl md:text-4xl font-extrabold text-white drop-shadow-lg"
+            className="text-xl sm:text-3xl md:text-4xl font-extrabold text-white drop-shadow-lg line-clamp-1"
             style={{ fontFamily: "Nunito, sans-serif" }}
           >
             {businessName}

@@ -62,28 +62,28 @@ export function CombinedAnalyticsChart() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-[#0f1929] rounded-2xl p-6 border border-[#1e3a5f]/30"
+      className="bg-[#0f1929] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#1e3a5f]/30"
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
         <div>
-          <h3 className="text-lg font-extrabold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
-            Revenue & Scans Correlation
+          <h3 className="text-base sm:text-lg font-extrabold text-white" style={{ fontFamily: "Nunito, sans-serif" }}>
+            Revenue & Scans
           </h3>
-          <p className="text-sm text-gray-400 font-semibold">Track performance over time</p>
+          <p className="text-xs sm:text-sm text-gray-400 font-semibold">Track performance over time</p>
         </div>
-        <div className="flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: TEAL }} />
+        <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" style={{ background: TEAL }} />
             <span className="text-gray-300 font-medium">Revenue</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: CYAN }} />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full" style={{ background: CYAN }} />
             <span className="text-gray-300 font-medium">Scans</span>
           </div>
         </div>
       </div>
 
-      <div className="h-72">
+      <div className="h-56 sm:h-72">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
