@@ -79,10 +79,10 @@ export default function ScoutDashboard() {
     <div className="min-h-screen bg-[#0a0118] text-white selection:bg-purple-500/30" key={refreshKey}>
       <ScoutSidebar />
 
-      <main className="md:ml-64 p-4 md:p-8 pb-24 md:pb-8">
+      <main className="md:ml-64 p-3 sm:p-4 md:p-8 pb-24 md:pb-8">
         <StaggeredFadeIn staggerDelay={0.08}>
           <FadeUpItem>
-            <ProfileHeader className="mb-4" />
+            <ProfileHeader className="mb-3 sm:mb-4" />
 
             {/* Seed button below cover */}
             <div className="mt-4 flex justify-end">
@@ -100,19 +100,19 @@ export default function ScoutDashboard() {
           </FadeUpItem>
 
           <FadeUpItem>
-            <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <div className="mt-6 sm:mt-8 grid gap-4 sm:gap-6 lg:grid-cols-2">
               <div id="earnings" className="scroll-mt-6">
                 <EarningsRadialChart key={`earnings-${refreshKey}`} />
               </div>
 
               <div id="gigs" className="flex flex-col scroll-mt-6">
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="font-heading text-xl font-semibold flex items-center gap-2">
-                    <List className="h-5 w-5 text-purple-400" />
+                <div className="mb-3 sm:mb-4 flex items-center justify-between">
+                  <h2 className="font-heading text-lg sm:text-xl font-semibold flex items-center gap-2">
+                    <List className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400" />
                     My Quest Lines
                   </h2>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" className="text-purple-400">View All <ArrowUpRight className="ml-1 h-4 w-4" /></Button>
+                    <Button variant="ghost" size="sm" className="text-purple-400 text-xs sm:text-sm">View All <ArrowUpRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" /></Button>
                   </div>
                 </div>
                 <div className="grid gap-4 flex-1">
@@ -124,24 +124,24 @@ export default function ScoutDashboard() {
             </div>
           </FadeUpItem>
 
-          <FadeUpItem><div id="workbench" className="mt-8"><InfluencerWorkbench /></div></FadeUpItem>
-          <FadeUpItem><div id="gig-creator" className="mt-8"><QuestCreator /></div></FadeUpItem>
-          <FadeUpItem><div id="merch-qr" className="mt-8"><InfluencerMerchQR /></div></FadeUpItem>
-          <FadeUpItem><div id="recent-content" className="mt-10"><RecentContent /></div></FadeUpItem>
+          <FadeUpItem><div id="workbench" className="mt-6 sm:mt-8"><InfluencerWorkbench /></div></FadeUpItem>
+          <FadeUpItem><div id="gig-creator" className="mt-6 sm:mt-8"><QuestCreator /></div></FadeUpItem>
+          <FadeUpItem><div id="merch-qr" className="mt-6 sm:mt-8"><InfluencerMerchQR /></div></FadeUpItem>
+          <FadeUpItem><div id="recent-content" className="mt-8 sm:mt-10"><RecentContent /></div></FadeUpItem>
           
           {/* Gigs Section - Available Missions */}
           <FadeUpItem>
-            <div id="available-gigs" className="mt-8 scroll-mt-6">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-heading text-xl font-semibold flex items-center gap-2">
-                  <Handshake className="h-5 w-5 text-purple-400" />
+            <div id="available-gigs" className="mt-6 sm:mt-8 scroll-mt-6">
+              <div className="mb-3 sm:mb-4 flex items-center justify-between">
+                <h2 className="font-heading text-lg sm:text-xl font-semibold flex items-center gap-2">
+                  <Handshake className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400" />
                   Available Gigs
                 </h2>
-                <Button variant="ghost" className="text-purple-400">
-                  Browse All <ArrowUpRight className="ml-1 h-4 w-4" />
+                <Button variant="ghost" size="sm" className="text-purple-400 text-xs sm:text-sm">
+                  Browse All <ArrowUpRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {mockMissions.slice(0, 3).map((mission) => (
                   <GlassCard key={mission.id} className="p-4 hover:border-purple-500/30 transition-colors">
                     <div className="flex items-start justify-between mb-3">
