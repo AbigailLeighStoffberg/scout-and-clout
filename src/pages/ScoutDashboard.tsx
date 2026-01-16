@@ -182,7 +182,6 @@ export default function ScoutDashboard() {
         </StaggeredFadeIn>
       </main>
 
-      <MobileBottomNav variant="creator" />
       {/* VibeAI Chatbot - hidden on mobile (accessible via nav) */}
       <div className="hidden md:block">
         <VibeAIChatbot />
