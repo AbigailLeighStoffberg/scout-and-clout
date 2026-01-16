@@ -6,8 +6,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAppStore } from "@/store/useAppStore";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
-import MerchantDashboard from "./pages/MerchantDashboard"; // KEEP THIS
+import MerchantDashboard from "./pages/MerchantDashboard";
+import MerchantSettings from "./pages/MerchantSettings";
 import ScoutDashboard from "./pages/ScoutDashboard";
+import ScoutSettings from "./pages/ScoutSettings";
 import CuratorStudio from "./dashboards/CuratorDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -43,7 +45,7 @@ const App = () => (
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<AuthPage />} />
 
-          {/* MERCHANT ROUTES - All pointing to the Cyberpunk Dashboard */}
+          {/* MERCHANT ROUTES */}
           <Route
             path="/merchant"
             element={
@@ -52,7 +54,14 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-          {/* We point /merchant/manage to the SAME dashboard to avoid breaking links */}
+          <Route
+            path="/merchant/settings"
+            element={
+              <ProtectedRoute requiredRole="merchant">
+                <MerchantSettings />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/merchant/manage"
             element={
@@ -68,6 +77,14 @@ const App = () => (
             element={
               <ProtectedRoute requiredRole="curator">
                 <ScoutDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/scout/settings"
+            element={
+              <ProtectedRoute requiredRole="curator">
+                <ScoutSettings />
               </ProtectedRoute>
             }
           />
