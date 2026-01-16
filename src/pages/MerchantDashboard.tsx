@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { MerchantSidebar } from "@/components/navigation/MerchantSidebar";
 import { MobileTopNav } from "@/components/navigation/MobileTopNav";
-import { MobileBottomNav } from "@/components/navigation/MobileBottomNav";
 import { VibeAIChatbot } from "@/components/chat/VibeAIChatbot";
 import { CinematicBanner } from "@/components/merchant/CinematicBanner";
 import { CombinedAnalyticsChart } from "@/components/merchant/CombinedAnalyticsChart";
@@ -24,28 +23,28 @@ export default function MerchantDashboard() {
   const { user, setDarkMode, setChatOpen } = useAppStore();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [refreshKey, setRefreshKey] = useState(0); 
+  const [refreshKey, setRefreshKey] = useState(0);
   const [isSeeding, setIsSeeding] = useState(false);
 
   // 1. Enforce Dark Theme with Teal Merchant Identity
   useEffect(() => {
     setDarkMode(true);
     document.documentElement.classList.add("dark");
-    document.documentElement.classList.remove("influencer-theme"); 
-    
-    document.documentElement.style.setProperty('--primary', '169 71% 40%');
-    document.body.style.backgroundColor = "#0f1929"; 
-    
-    return () => { 
-      document.documentElement.style.removeProperty('--primary');
+    document.documentElement.classList.remove("influencer-theme");
+
+    document.documentElement.style.setProperty("--primary", "169 71% 40%");
+    document.body.style.backgroundColor = "#0f1929";
+
+    return () => {
+      document.documentElement.style.removeProperty("--primary");
       document.body.style.backgroundColor = "";
     };
   }, [setDarkMode]);
 
   // 2. Optimized Seed Function
   const handleSeedData = async () => {
-    const userId = (user as any)?.id || (user as any)?.user_id; 
-    
+    const userId = (user as any)?.id || (user as any)?.user_id;
+
     if (!userId) {
       toast({ title: "Error", description: "No user ID found. Please re-login." });
       return;
@@ -53,28 +52,30 @@ export default function MerchantDashboard() {
 
     setIsSeeding(true);
     try {
-      const response = await fetch(`https://vibecheck-api.atwebpages.com/api.php?action=seed_analytics&user_id=${userId}`);
+      const response = await fetch(
+        `https://vibecheck-api.atwebpages.com/api.php?action=seed_analytics&user_id=${userId}`,
+      );
       const data = await response.json();
-      
+
       if (data.status === "success") {
-        toast({ 
-          title: "Database Seeded", 
-          description: "Unique analytics generated for your account." 
+        toast({
+          title: "Database Seeded",
+          description: "Unique analytics generated for your account.",
         });
-        
-        queryClient.invalidateQueries({ queryKey: ['merchant-stats'] });
-        queryClient.invalidateQueries({ queryKey: ['influencer-sales'] });
-        
-        setRefreshKey(prev => prev + 1); 
+
+        queryClient.invalidateQueries({ queryKey: ["merchant-stats"] });
+        queryClient.invalidateQueries({ queryKey: ["influencer-sales"] });
+
+        setRefreshKey((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Failed to seed data:", error);
-      toast({ 
-        title: "Syncing Analytics...", 
-        description: "AwardSpace is busy, but data may still be updating.", 
-        variant: "default" 
+      toast({
+        title: "Syncing Analytics...",
+        description: "AwardSpace is busy, but data may still be updating.",
+        variant: "default",
       });
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } finally {
       setIsSeeding(false);
     }
@@ -131,7 +132,6 @@ export default function MerchantDashboard() {
             </div>
           </FadeUpItem>
 
-
           <FadeUpItem>
             <div id="create-drop" className="mb-4 sm:mb-6 scroll-mt-6">
               <CreateDropStudio />
@@ -140,7 +140,6 @@ export default function MerchantDashboard() {
         </StaggeredFadeIn>
       </main>
 
-      <MobileBottomNav variant="partner" />
       {/* VibeAI Chatbot - hidden on mobile (accessible via nav) */}
       <div className="hidden md:block">
         <VibeAIChatbot />
