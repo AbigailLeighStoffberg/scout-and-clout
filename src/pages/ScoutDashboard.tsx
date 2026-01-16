@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ScoutSidebar } from "@/components/navigation/ScoutSidebar";
 import { MobileTopNav } from "@/components/navigation/MobileTopNav";
-import { MobileBottomNav } from "@/components/navigation/MobileBottomNav";
 import { VibeAIChatbot } from "@/components/chat/VibeAIChatbot";
 import { ProfileHeader } from "@/components/scout/ProfileHeader";
 import { EarningsRadialChart } from "@/components/scout/EarningsRadialChart";
@@ -23,27 +22,27 @@ export default function ScoutDashboard() {
   const { user, setDarkMode, setChatOpen } = useAppStore();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [refreshKey, setRefreshKey] = useState(0); 
+  const [refreshKey, setRefreshKey] = useState(0);
   const [isSeeding, setIsSeeding] = useState(false);
 
   // 1. Enforce Dark Theme with Purple Influencer Identity
   useEffect(() => {
     setDarkMode(true);
     document.documentElement.classList.add("dark");
-    document.documentElement.classList.add("influencer-theme"); 
-    
-    document.documentElement.style.setProperty('--primary', '270 70% 60%');
+    document.documentElement.classList.add("influencer-theme");
+
+    document.documentElement.style.setProperty("--primary", "270 70% 60%");
     document.body.style.backgroundColor = "#0a0118";
-    
-    return () => { 
-      document.documentElement.style.removeProperty('--primary');
+
+    return () => {
+      document.documentElement.style.removeProperty("--primary");
       document.documentElement.classList.remove("influencer-theme");
     };
   }, [setDarkMode]);
 
   // 2. Dynamic Seed Function
   const handleSeedData = async () => {
-    const userId = (user as any)?.id || (user as any)?.user_id; 
+    const userId = (user as any)?.id || (user as any)?.user_id;
     if (!userId) {
       toast({ title: "Error", description: "No user ID found. Please re-login." });
       return;
@@ -51,21 +50,23 @@ export default function ScoutDashboard() {
 
     setIsSeeding(true);
     try {
-      const response = await fetch(`https://vibecheck-api.atwebpages.com/api.php?action=seed_analytics&user_id=${userId}`);
+      const response = await fetch(
+        `https://vibecheck-api.atwebpages.com/api.php?action=seed_analytics&user_id=${userId}`,
+      );
       const data = await response.json();
-      
+
       if (data.status === "success") {
         toast({ title: "Stats Seeded", description: "Your influencer metrics are now live." });
-        
-        queryClient.invalidateQueries({ queryKey: ['influencer-stats'] });
-        queryClient.invalidateQueries({ queryKey: ['earnings-data'] });
-        
-        setRefreshKey(prev => prev + 1); 
+
+        queryClient.invalidateQueries({ queryKey: ["influencer-stats"] });
+        queryClient.invalidateQueries({ queryKey: ["earnings-data"] });
+
+        setRefreshKey((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Failed to seed data:", error);
       toast({ title: "Syncing...", description: "Updating your records now.", variant: "default" });
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey((prev) => prev + 1);
     } finally {
       setIsSeeding(false);
     }
@@ -109,7 +110,9 @@ export default function ScoutDashboard() {
                     My Quest Lines
                   </h2>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="text-purple-400 text-xs sm:text-sm">View All <ArrowUpRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" /></Button>
+                    <Button variant="ghost" size="sm" className="text-purple-400 text-xs sm:text-sm">
+                      View All <ArrowUpRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
                   </div>
                 </div>
                 <div className="grid gap-4 flex-1">
@@ -121,11 +124,27 @@ export default function ScoutDashboard() {
             </div>
           </FadeUpItem>
 
-          <FadeUpItem><div id="workbench" className="mt-6 sm:mt-8"><InfluencerWorkbench /></div></FadeUpItem>
-          <FadeUpItem><div id="gig-creator" className="mt-6 sm:mt-8"><QuestCreator /></div></FadeUpItem>
-          <FadeUpItem><div id="merch-qr" className="mt-6 sm:mt-8"><InfluencerMerchQR /></div></FadeUpItem>
-          <FadeUpItem><div id="recent-content" className="mt-8 sm:mt-10"><RecentContent /></div></FadeUpItem>
-          
+          <FadeUpItem>
+            <div id="workbench" className="mt-6 sm:mt-8">
+              <InfluencerWorkbench />
+            </div>
+          </FadeUpItem>
+          <FadeUpItem>
+            <div id="gig-creator" className="mt-6 sm:mt-8">
+              <QuestCreator />
+            </div>
+          </FadeUpItem>
+          <FadeUpItem>
+            <div id="merch-qr" className="mt-6 sm:mt-8">
+              <InfluencerMerchQR />
+            </div>
+          </FadeUpItem>
+          <FadeUpItem>
+            <div id="recent-content" className="mt-8 sm:mt-10">
+              <RecentContent />
+            </div>
+          </FadeUpItem>
+
           {/* Gigs Section - Available Missions */}
           <FadeUpItem>
             <div id="available-gigs" className="mt-6 sm:mt-8 scroll-mt-6">

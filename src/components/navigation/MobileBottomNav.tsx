@@ -1,14 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  LayoutDashboard,
-  Gift,
-  Map,
-  Users,
-  List,
-  Target,
-  Zap,
-} from "lucide-react";
+import { LayoutDashboard, Gift, Map, Users, List, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MobileBottomNavProps {
@@ -41,7 +33,7 @@ export function MobileBottomNav({ variant }: MobileBottomNavProps) {
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50 md:hidden",
         "glass border-t border-border/50 backdrop-blur-2xl",
-        "safe-area-inset-bottom"
+        "safe-area-inset-bottom",
       )}
     >
       <div className="flex items-center justify-around px-2 py-2">
@@ -53,22 +45,13 @@ export function MobileBottomNav({ variant }: MobileBottomNavProps) {
               to={item.href}
               className={cn(
                 "relative flex flex-col items-center gap-1 rounded-xl px-4 py-2 transition-all",
-                isActive
-                  ? isPartner
-                    ? "text-[#1DB09B]"
-                    : "text-[#A759D8]"
-                  : "text-muted-foreground"
+                isActive ? (isPartner ? "text-[#1DB09B]" : "text-[#A759D8]") : "text-muted-foreground",
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId={`mobile-nav-bg-${variant}`}
-                  className={cn(
-                    "absolute inset-0 rounded-xl",
-                    isPartner
-                      ? "bg-[#1DB09B]/10"
-                      : "bg-[#A759D8]/10"
-                  )}
+                  className={cn("absolute inset-0 rounded-xl", isPartner ? "bg-[#1DB09B]/10" : "bg-[#A759D8]/10")}
                   transition={{ type: "spring", duration: 0.4 }}
                 />
               )}
