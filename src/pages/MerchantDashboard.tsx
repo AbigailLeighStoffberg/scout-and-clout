@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { MerchantSidebar } from "@/components/navigation/MerchantSidebar";
+import { MobileTopNav } from "@/components/navigation/MobileTopNav";
 import { MobileBottomNav } from "@/components/navigation/MobileBottomNav";
-import { RoleSwitcher } from "@/components/navigation/RoleSwitcher";
 import { VibeAIChatbot } from "@/components/chat/VibeAIChatbot";
 import { CinematicBanner } from "@/components/merchant/CinematicBanner";
 import { CombinedAnalyticsChart } from "@/components/merchant/CombinedAnalyticsChart";
 import { TrafficSourcesChart } from "@/components/merchant/TrafficSourcesChart";
 import { TopInfluencersLeaderboard } from "@/components/merchant/TopInfluencersLeaderboard";
 import { CreateDropStudio } from "@/components/merchant/CreateDropStudio";
-import { CreateDropFAB } from "@/components/merchant/CreateDropWidget";
 import { QRStationCyberpunk } from "@/components/merchant/QRStationCyberpunk";
 
 import { mockMerchant } from "@/data/mockData";
@@ -22,7 +21,7 @@ import defaultPfp from "@/assets/pfp.png";
 import defaultCover from "@/assets/lacover.png";
 
 export default function MerchantDashboard() {
-  const { user, setDarkMode } = useAppStore();
+  const { user, setDarkMode, setChatOpen } = useAppStore();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [refreshKey, setRefreshKey] = useState(0); 
@@ -43,7 +42,7 @@ export default function MerchantDashboard() {
     };
   }, [setDarkMode]);
 
-  // 2. Optimized Seed Function (FIXED: Removed duplicates and syntax errors)
+  // 2. Optimized Seed Function
   const handleSeedData = async () => {
     const userId = (user as any)?.id || (user as any)?.user_id; 
     
@@ -63,11 +62,9 @@ export default function MerchantDashboard() {
           description: "Unique analytics generated for your account." 
         });
         
-        // Refresh TanStack Query cache
         queryClient.invalidateQueries({ queryKey: ['merchant-stats'] });
         queryClient.invalidateQueries({ queryKey: ['influencer-sales'] });
         
-        // Trigger local re-render
         setRefreshKey(prev => prev + 1); 
       }
     } catch (error) {
@@ -90,18 +87,15 @@ export default function MerchantDashboard() {
   return (
     <div className="min-h-screen bg-[#0f1929] text-white selection:bg-teal-500/30" key={refreshKey}>
       <MerchantSidebar />
+      <MobileTopNav variant="merchant" onOpenChat={() => setChatOpen(true)} />
 
-      <main className="md:ml-64 p-3 sm:p-4 md:p-8 pb-24 md:pb-8">
-        <div className="md:hidden mb-3 sm:mb-4">
-          <RoleSwitcher variant="merchant" />
-        </div>
-
+      <main className="md:ml-64 p-3 sm:p-4 md:p-8 pt-16 md:pt-8 pb-24 md:pb-8">
         <StaggeredFadeIn staggerDelay={0.08}>
           <FadeUpItem>
             <CinematicBanner businessName={businessName} coverUrl={coverUrl} profilePic={profilePic} />
 
-            {/* Seed button below cover */}
-            <div className="mt-3 sm:mt-4 mb-4 sm:mb-6 flex justify-end">
+            {/* Seed button - hidden on mobile */}
+            <div className="mt-3 sm:mt-4 mb-4 sm:mb-6 hidden md:flex justify-end">
               <Button
                 onClick={handleSeedData}
                 disabled={isSeeding}
@@ -146,9 +140,11 @@ export default function MerchantDashboard() {
         </StaggeredFadeIn>
       </main>
 
-      <CreateDropFAB />
       <MobileBottomNav variant="partner" />
-      <VibeAIChatbot />
+      {/* VibeAI Chatbot - hidden on mobile (accessible via nav) */}
+      <div className="hidden md:block">
+        <VibeAIChatbot />
+      </div>
     </div>
   );
 }

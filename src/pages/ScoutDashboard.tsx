@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScoutSidebar } from "@/components/navigation/ScoutSidebar";
+import { MobileTopNav } from "@/components/navigation/MobileTopNav";
 import { MobileBottomNav } from "@/components/navigation/MobileBottomNav";
-import { RoleSwitcher } from "@/components/navigation/RoleSwitcher";
 import { VibeAIChatbot } from "@/components/chat/VibeAIChatbot";
 import { ProfileHeader } from "@/components/scout/ProfileHeader";
 import { EarningsRadialChart } from "@/components/scout/EarningsRadialChart";
@@ -12,17 +12,15 @@ import { RecentContent } from "@/components/scout/RecentContent";
 import { StaggeredFadeIn, FadeUpItem } from "@/components/effects/StaggeredFadeIn";
 import { useAppStore } from "@/store/useAppStore";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Database, Plus, List, ArrowUpRight, Handshake } from "lucide-react";
+import { RefreshCw, Database, List, ArrowUpRight, Handshake } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { mockVibeLists, mockMissions } from "@/data/mockData";
 import { VibeListCardEnhanced } from "@/components/scout/VibeListCardEnhanced";
-import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/glass-card";
-import { cn } from "@/lib/utils";
 
 export default function ScoutDashboard() {
-  const { user, setDarkMode } = useAppStore();
+  const { user, setDarkMode, setChatOpen } = useAppStore();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [refreshKey, setRefreshKey] = useState(0); 
@@ -34,9 +32,8 @@ export default function ScoutDashboard() {
     document.documentElement.classList.add("dark");
     document.documentElement.classList.add("influencer-theme"); 
     
-    // Set Purple Brand Color (--primary)
     document.documentElement.style.setProperty('--primary', '270 70% 60%');
-    document.body.style.backgroundColor = "#0a0118"; // Deeper purple/black bg
+    document.body.style.backgroundColor = "#0a0118";
     
     return () => { 
       document.documentElement.style.removeProperty('--primary');
@@ -44,7 +41,7 @@ export default function ScoutDashboard() {
     };
   }, [setDarkMode]);
 
-  // 2. Dynamic Seed Function (Exactly like Merchant)
+  // 2. Dynamic Seed Function
   const handleSeedData = async () => {
     const userId = (user as any)?.id || (user as any)?.user_id; 
     if (!userId) {
@@ -60,7 +57,6 @@ export default function ScoutDashboard() {
       if (data.status === "success") {
         toast({ title: "Stats Seeded", description: "Your influencer metrics are now live." });
         
-        // Refresh Influencer-specific queries
         queryClient.invalidateQueries({ queryKey: ['influencer-stats'] });
         queryClient.invalidateQueries({ queryKey: ['earnings-data'] });
         
@@ -78,14 +74,15 @@ export default function ScoutDashboard() {
   return (
     <div className="min-h-screen bg-[#0a0118] text-white selection:bg-purple-500/30" key={refreshKey}>
       <ScoutSidebar />
+      <MobileTopNav variant="creator" onOpenChat={() => setChatOpen(true)} />
 
-      <main className="md:ml-64 p-3 sm:p-4 md:p-8 pb-24 md:pb-8">
+      <main className="md:ml-64 p-3 sm:p-4 md:p-8 pt-16 md:pt-8 pb-24 md:pb-8">
         <StaggeredFadeIn staggerDelay={0.08}>
           <FadeUpItem>
             <ProfileHeader className="mb-3 sm:mb-4" />
 
-            {/* Seed button below cover */}
-            <div className="mt-4 flex justify-end">
+            {/* Seed button - hidden on mobile */}
+            <div className="mt-4 hidden md:flex justify-end">
               <Button
                 onClick={handleSeedData}
                 disabled={isSeeding}
@@ -167,7 +164,10 @@ export default function ScoutDashboard() {
       </main>
 
       <MobileBottomNav variant="creator" />
-      <VibeAIChatbot />
+      {/* VibeAI Chatbot - hidden on mobile (accessible via nav) */}
+      <div className="hidden md:block">
+        <VibeAIChatbot />
+      </div>
     </div>
   );
 }
