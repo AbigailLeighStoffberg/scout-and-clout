@@ -45,12 +45,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 3. Database Connection
-$host = "pdb1056.awardspace.net";
-$db_name = "4719155_vibecheck";
-$username = "4719155_vibecheck";
-$password = "Abigail@33";
-
 try {
     $dsn = "mysql:host=$host;dbname=$db_name;charset=utf8mb4";
     $options = [
