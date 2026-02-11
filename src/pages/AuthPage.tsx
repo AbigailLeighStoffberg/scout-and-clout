@@ -795,6 +795,57 @@ export default function AuthPage() {
                 </>
               )}
             </p>
+
+            {/* Demo Mode - bypass auth for preview testing */}
+            <div className="mt-6 pt-4 border-t border-slate-700/50">
+              <p className="text-xs text-slate-500 text-center mb-3">Preview Mode — skip auth</p>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 border-[#1DAFA1]/40 text-[#1DAFA1] hover:bg-[#1DAFA1]/10 text-xs"
+                  onClick={() => {
+                    setUser({
+                      id: 'demo-merchant',
+                      email: 'demo@partner.com',
+                      name: 'Demo Partner',
+                      username: 'demopartner',
+                      role: 'merchant',
+                      roles: ['merchant', 'curator'],
+                      activeRole: 'merchant',
+                      businessName: 'Tasty Bites Café',
+                      business_name: 'Tasty Bites Café',
+                    } as any);
+                    setDarkMode(false);
+                    navigate('/merchant');
+                  }}
+                >
+                  Demo Partner
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 border-purple-500/40 text-purple-400 hover:bg-purple-500/10 text-xs"
+                  onClick={() => {
+                    setUser({
+                      id: 'demo-curator',
+                      email: 'demo@influencer.com',
+                      name: 'Alex Rivera',
+                      username: 'alexvibe',
+                      role: 'curator',
+                      roles: ['curator', 'merchant'],
+                      activeRole: 'curator',
+                    } as any);
+                    setDarkMode(true);
+                    navigate('/scout');
+                  }}
+                >
+                  Demo Influencer
+                </Button>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
